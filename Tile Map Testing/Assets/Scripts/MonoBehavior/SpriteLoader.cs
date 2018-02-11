@@ -7,6 +7,7 @@ public class SpriteLoader : MonoBehaviour {
 	public static SpriteLoader instance;
 
 	public static Sprite[] SpriteArray;
+	public static Material worldMaterial;
 
 	Dictionary<string, int> spriteMap = new Dictionary<string, int>();
 	Dictionary<string, Vector2[]> uvMap;
@@ -14,8 +15,9 @@ public class SpriteLoader : MonoBehaviour {
 	void Awake (){
 		instance = this;
 		uvMap = new Dictionary<string, Vector2[]>();
-
 		SpriteArray = Resources.LoadAll<Sprite> ("Sprites");
+		worldMaterial = new Material (Shader.Find ("Sprites/Default"));
+		worldMaterial.mainTexture = SpriteArray [0].texture;
 
 		float spriteWidth = 0f;
 		float spriteHeight = 0f;

@@ -8,14 +8,14 @@ public class MeshData {
 	public List<int> triangles;
 	public List<Vector2> uvs;
 
-	public MeshData(Tile[,,] tiles, Tile[,,] chunkTiles, int currentLevel){
+	public MeshData(Tile[,,] tiles, Tile[,,] chunkTiles, int currentLevel, int xindex, int yindex){
 		vertices = new List<Vector3>();
 		triangles = new List<int>();
 		uvs = new List<Vector2> ();
 
 		for (int x = 0; x < chunkTiles.GetLength(1); x++) {
 			for (int y = 0; y < chunkTiles.GetLength(2); y++) {
-				GenerateSquare(tiles[currentLevel,x,y], x, y);
+				GenerateSquare (tiles [currentLevel, x + xindex, y + yindex], x, y);
 			}
 		}
 	}
