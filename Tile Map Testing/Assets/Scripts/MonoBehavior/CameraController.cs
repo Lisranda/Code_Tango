@@ -78,27 +78,9 @@ public class CameraController : MonoBehaviour {
 			Camera.main.ScreenToWorldPoint(Input.mousePosition).y < TileGenerator.mapHeight) {
 			int camX = Mathf.FloorToInt (Camera.main.ScreenToWorldPoint (Input.mousePosition).x);
 			int camY = Mathf.FloorToInt (Camera.main.ScreenToWorldPoint (Input.mousePosition).y);
+
 			Tile.BuildWall (TileGenerator.tiles [currentLevel, camX, camY]);
-
-			RaycastHit hit;
-			Ray ray = Camera.main.ScreenPointToRay (Input.mousePosition);
-
-			if (Physics.Raycast (ray, out hit)) {
-				Transform objectHit = hit.transform;
-				MeshFilter filter = objectHit.GetComponent<MeshFilter> ();
-				Mesh mesh = filter.mesh;
-				int chunkSize = Mathf.FloorToInt(Mathf.Sqrt (mesh.vertices.Length / 4));
-				int chunkX = Mathf.FloorToInt(objectHit.position.x);
-				int chunkY = Mathf.FloorToInt(objectHit.position.y);
-
-				for (int i = 0; i < chunkSize; i++) {
-					for (int o = 0; o < chunkSize; o++) {
-						uvs.AddRange (SpriteLoader.instance.GetUVS (TileGenerator.tiles [currentLevel, i + chunkX, o + chunkY]));
-					}
-				}
-				mesh.uv = uvs.ToArray ();
-				uvs.Clear ();
-			}
+			TileGenerator.RefreshMeshAtTile (TileGenerator.tiles [currentLevel, camX, camY]);
 		}
 	}
 
@@ -117,4 +99,34 @@ public class CameraController : MonoBehaviour {
 			orthoScales [i] = (Camera.main.pixelHeight / (float)(scale * pixelsPerUnit)) / 2f;
 		}
 	}
+
+	public void RefreshMesh(Tile t){
+		Mesh mesh = MeshData.GetMeshAtTile (t);
+
+		int posChunkX = Mathf.FloorToInt (TileGenerator.tiles [currentLevel, t.X, t.Y].MESH.transform.position.x);
+		int posChunkY = Mathf.FloorToInt (TileGenerator.tiles [currentLevel, t.X, t.Y].MESH.transform.position.y);
+		int chunkX = 0;
+		int chunkY = 0;
+
+		for (int i = 0; i < TileGenerator.tiles.GetLength(1); i++) {
+			if (mesh == TileGenerator.tiles [currentLevel, i, t.Y].MESH.GetComponent<MeshFilter> ().mesh) {
+				chunkX++;				
+			}					
+		}
+		for (int i = 0; i < TileGenerator.tiles.GetLength(2); i++) {
+			if (mesh == TileGenerator.tiles [currentLevel, t.X, i].MESH.GetComponent<MeshFilter> ().mesh) {
+				chunkY++;
+			}
+		}
+
+		for (int i = 0; i < chunkX; i++) {
+			for (int o = 0; o < chunkY; o++) {
+				uvs.AddRange (SpriteLoader.instance.GetUVS (TileGenerator.tiles [currentLevel, i + posChunkX, o + posChunkY]));
+			}
+		}
+
+		mesh.uv = uvs.ToArray ();
+		uvs.Clear ();
+	}
+
 }

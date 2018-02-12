@@ -20,6 +20,11 @@ public class MeshData {
 		}
 	}
 
+	public static Mesh GetMeshAtTile(Tile t){
+		Mesh m = t.MESH.GetComponent<MeshFilter> ().mesh;
+		return m;
+	}
+
 	void GenerateSquare (Tile tile, int x, int y){
 		vertices.Add (new Vector3 (x + 0, y + 0));
 		vertices.Add (new Vector3 (x + 1, y + 0));
