@@ -18,6 +18,9 @@ public class TileGenerator : MonoBehaviour {
 	public float persistance;
 	public int octaves;
 
+	int worldChunkMax = 125;
+	int wallChunkMax = 25;
+
 	public readonly static int startingLevel = 52;
 
 	public static Tile[,,] tiles = new Tile[mapLevels, mapWidth, mapHeight];
@@ -39,12 +42,11 @@ public class TileGenerator : MonoBehaviour {
 
 	void GenerateLevels(){
 		for (int level = 0; level < mapLevels; level++) {
-			GameObject levelGO = new GameObject ("Level: " + (level + 1));
-			levelGO.transform.position = new Vector3 (0, 0, 0);
-			levelArray [level] = levelGO;
-			DivideTilesArray (0, 0, level, levelGO);
+			levelArray [level] = new GameObject ("Level: " + (level + 1));
+			levelArray [level].transform.position = Vector3.zero;
+			DivideTilesArray (0, 0, level, levelArray [level]);
 			if (level != startingLevel - 1) {
-				levelGO.SetActive (false);
+				levelArray [level].SetActive (false);
 			}
 		}
 	}
@@ -71,14 +73,14 @@ public class TileGenerator : MonoBehaviour {
 		int sizeX;
 		int sizeY;
 
-		if (tiles.GetLength (1) - dex1 > 125) {
-			sizeX = 125;
+		if (tiles.GetLength (1) - dex1 > worldChunkMax) {
+			sizeX = worldChunkMax;
 		} else {
 			sizeX = tiles.GetLength (1) - dex1;
 		}
 
-		if (tiles.GetLength (2) - dex2 > 125) {
-			sizeY = 125;
+		if (tiles.GetLength (2) - dex2 > worldChunkMax) {
+			sizeY = worldChunkMax;
 		} else {
 			sizeY = tiles.GetLength (2) - dex2;
 		}
@@ -93,23 +95,23 @@ public class TileGenerator : MonoBehaviour {
 
 		GenerateWorldMesh (chunk, dex1, dex2, currentLevel, levelGO);
 
-		if (tiles.GetLength (1) > dex1 + 125) {
-			DivideTilesArray (dex1 + 125, dex2, currentLevel, levelGO);
+		if (tiles.GetLength (1) > dex1 + worldChunkMax) {
+			DivideTilesArray (dex1 + worldChunkMax, dex2, currentLevel, levelGO);
 			return;
 		}
-		if (tiles.GetLength (2) > dex2 + 125) {
-			DivideTilesArray (0, dex2 + 125, currentLevel, levelGO);
+		if (tiles.GetLength (2) > dex2 + worldChunkMax) {
+			DivideTilesArray (0, dex2 + worldChunkMax, currentLevel, levelGO);
 			return;
 		}
 	}
 
 	void GenerateWorldMesh(Tile[,,] tilesChunk, int x, int y, int currentLevel, GameObject levelGO){
 		MeshData data = new MeshData (tiles, tilesChunk, currentLevel, x, y);
-		GameObject meshGO = new GameObject ("MESH " + (currentLevel + 1) + " " + x + " " + y);
+		GameObject meshGO = new GameObject ("MESH WORLD " + (currentLevel + 1) + " " + x + " " + y);
 
 		for (int i = 0 + x; i < tilesChunk.GetLength (1) + x; i++) {
 			for (int o = 0 + y; o < tilesChunk.GetLength (2) + y; o++) {
-				tiles [currentLevel, i, o].MESH = meshGO;
+				tiles [currentLevel, i, o].MESH [1] = meshGO;
 			}
 		}
 
@@ -140,18 +142,18 @@ public class TileGenerator : MonoBehaviour {
 	public static void RefreshMeshAtTile(Tile t){
 		Mesh mesh = MeshData.GetMeshAtTile (t);
 
-		int posChunkX = Mathf.FloorToInt (tiles [t.LEVEL, t.X, t.Y].MESH.transform.position.x);
-		int posChunkY = Mathf.FloorToInt (tiles [t.LEVEL, t.X, t.Y].MESH.transform.position.y);
+		int posChunkX = Mathf.FloorToInt (tiles [t.LEVEL, t.X, t.Y].MESH [1].transform.position.x);
+		int posChunkY = Mathf.FloorToInt (tiles [t.LEVEL, t.X, t.Y].MESH [1].transform.position.y);
 		int chunkX = 0;
 		int chunkY = 0;
 
 		for (int i = 0; i < tiles.GetLength(1); i++) {
-			if (mesh == tiles [t.LEVEL, i, t.Y].MESH.GetComponent<MeshFilter> ().mesh) {
+			if (mesh == tiles [t.LEVEL, i, t.Y].MESH [1].GetComponent<MeshFilter> ().mesh) {
 				chunkX++;				
 			}					
 		}
 		for (int i = 0; i < tiles.GetLength(2); i++) {
-			if (mesh == tiles [t.LEVEL, t.X, i].MESH.GetComponent<MeshFilter> ().mesh) {
+			if (mesh == tiles [t.LEVEL, t.X, i].MESH [1].GetComponent<MeshFilter> ().mesh) {
 				chunkY++;
 			}
 		}

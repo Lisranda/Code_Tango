@@ -21,7 +21,7 @@ public class MeshData {
 	}
 
 	public static Mesh GetMeshAtTile(Tile t){
-		Mesh m = t.MESH.GetComponent<MeshFilter> ().mesh;
+		Mesh m = t.MESH [1].GetComponent<MeshFilter> ().mesh;
 		return m;
 	}
 

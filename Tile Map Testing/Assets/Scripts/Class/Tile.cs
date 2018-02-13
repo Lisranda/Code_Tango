@@ -10,7 +10,7 @@ public class Tile {
 	public readonly int X;
 	public readonly int Y;
 	public readonly int LEVEL;
-	public GameObject MESH;
+	public GameObject[] MESH = new GameObject[3];
 	public readonly float ELEVATION;
 	//public readonly float TEMPERATURE;
 	//public readonly float HUMIDITY;

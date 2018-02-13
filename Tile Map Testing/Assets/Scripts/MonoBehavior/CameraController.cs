@@ -103,18 +103,18 @@ public class CameraController : MonoBehaviour {
 	public void RefreshMesh(Tile t){
 		Mesh mesh = MeshData.GetMeshAtTile (t);
 
-		int posChunkX = Mathf.FloorToInt (TileGenerator.tiles [currentLevel, t.X, t.Y].MESH.transform.position.x);
-		int posChunkY = Mathf.FloorToInt (TileGenerator.tiles [currentLevel, t.X, t.Y].MESH.transform.position.y);
+		int posChunkX = Mathf.FloorToInt (TileGenerator.tiles [currentLevel, t.X, t.Y].MESH [1].transform.position.x);
+		int posChunkY = Mathf.FloorToInt (TileGenerator.tiles [currentLevel, t.X, t.Y].MESH [1].transform.position.y);
 		int chunkX = 0;
 		int chunkY = 0;
 
 		for (int i = 0; i < TileGenerator.tiles.GetLength(1); i++) {
-			if (mesh == TileGenerator.tiles [currentLevel, i, t.Y].MESH.GetComponent<MeshFilter> ().mesh) {
+			if (mesh == TileGenerator.tiles [currentLevel, i, t.Y].MESH [1].GetComponent<MeshFilter> ().mesh) {
 				chunkX++;				
 			}					
 		}
 		for (int i = 0; i < TileGenerator.tiles.GetLength(2); i++) {
-			if (mesh == TileGenerator.tiles [currentLevel, t.X, i].MESH.GetComponent<MeshFilter> ().mesh) {
+			if (mesh == TileGenerator.tiles [currentLevel, t.X, i].MESH [1].GetComponent<MeshFilter> ().mesh) {
 				chunkY++;
 			}
 		}
