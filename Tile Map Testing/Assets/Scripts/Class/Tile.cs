@@ -73,7 +73,8 @@ public class Tile {
 	}
 
 	public static void BuildWall(Tile tile){
-		tile.WALL = Wall.Wall;
+		tile.WALL = Wall.Empty;
 		tile.FLOOR = Floor.Stone;
+		tile.OVERLAY = Overlay.Empty;
 	}
 }
