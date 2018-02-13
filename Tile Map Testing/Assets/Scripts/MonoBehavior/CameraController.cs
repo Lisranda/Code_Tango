@@ -21,11 +21,8 @@ public class CameraController : MonoBehaviour {
 	int currentLevel = TileGenerator.startingLevel - 1;
 	int newLevel;
 
-	List<Vector2> uvs;
-
 	void Start (){
 		InitializeCamera ();
-		uvs = new List<Vector2> ();
 	}
 
 	void Update () {
@@ -99,34 +96,4 @@ public class CameraController : MonoBehaviour {
 			orthoScales [i] = (Camera.main.pixelHeight / (float)(scale * pixelsPerUnit)) / 2f;
 		}
 	}
-
-	public void RefreshMesh(Tile t){
-		Mesh mesh = MeshData.GetMeshAtTile (t);
-
-		int posChunkX = Mathf.FloorToInt (TileGenerator.tiles [currentLevel, t.X, t.Y].MESH [1].transform.position.x);
-		int posChunkY = Mathf.FloorToInt (TileGenerator.tiles [currentLevel, t.X, t.Y].MESH [1].transform.position.y);
-		int chunkX = 0;
-		int chunkY = 0;
-
-		for (int i = 0; i < TileGenerator.tiles.GetLength(1); i++) {
-			if (mesh == TileGenerator.tiles [currentLevel, i, t.Y].MESH [1].GetComponent<MeshFilter> ().mesh) {
-				chunkX++;				
-			}					
-		}
-		for (int i = 0; i < TileGenerator.tiles.GetLength(2); i++) {
-			if (mesh == TileGenerator.tiles [currentLevel, t.X, i].MESH [1].GetComponent<MeshFilter> ().mesh) {
-				chunkY++;
-			}
-		}
-
-		for (int i = 0; i < chunkX; i++) {
-			for (int o = 0; o < chunkY; o++) {
-				uvs.AddRange (SpriteLoader.instance.GetUVS (TileGenerator.tiles [currentLevel, i + posChunkX, o + posChunkY]));
-			}
-		}
-
-		mesh.uv = uvs.ToArray ();
-		uvs.Clear ();
-	}
-
 }

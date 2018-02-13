@@ -3,17 +3,19 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class Tile {
-	public enum Type {Empty, Floor, Wall};
-	public Type TYPE;
-	public enum Stuff {Empty, Grass, Dirt, Stone, Sand, Water};
-	public Stuff MAT;
+	public enum Wall {Empty, Wall};
+	public Wall WALL;
+	public enum Floor {Empty, Grass, Dirt, Stone, Sand, Water};
+	public Floor FLOOR;
+	public enum Overlay {Empty, Grass};
+	public Overlay OVERLAY;
 	public readonly int X;
 	public readonly int Y;
 	public readonly int LEVEL;
 	public GameObject[] MESH = new GameObject[3];
 	public readonly float ELEVATION;
-	//public readonly float TEMPERATURE;
-	//public readonly float HUMIDITY;
+	public readonly float TEMPERATURE;
+	public readonly float HUMIDITY;
 
 	public Tile(int level, int x, int y, float elevation){
 		this.X = x;
@@ -22,21 +24,25 @@ public class Tile {
 		this.ELEVATION = elevation;
 
 		if (LEVEL < 50) {
-			this.TYPE = Type.Wall;
-			this.MAT = Stuff.Stone;
+			this.WALL = Wall.Wall;
+			this.FLOOR = Floor.Stone;
+			this.OVERLAY = Overlay.Empty;
 		}
 
 		for (int i = 0; i < 10; i++) {
 			if (LEVEL == (50 + i)) {
 				if (ELEVATION < i / 10f) {
-					this.TYPE = Type.Empty;
-					this.MAT = Stuff.Empty;
+					this.WALL = Wall.Empty;
+					this.FLOOR = Floor.Empty;
+					this.OVERLAY = Overlay.Empty;
 				} else if (ELEVATION < (i + 1f) / 10f) {
-					this.TYPE = Type.Floor;
-					this.MAT = Stuff.Grass;
+					this.WALL = Wall.Empty;
+					this.FLOOR = Floor.Grass;
+					this.OVERLAY = Overlay.Empty;
 				} else {
-					this.TYPE = Type.Wall;
-					this.MAT = Stuff.Stone;
+					this.WALL = Wall.Empty;
+					this.FLOOR = Floor.Stone;
+					this.OVERLAY = Overlay.Empty;
 				}
 
 			}
@@ -67,7 +73,7 @@ public class Tile {
 	}
 
 	public static void BuildWall(Tile tile){
-		tile.TYPE = Type.Wall;
-		tile.MAT = Stuff.Stone;
+		tile.WALL = Wall.Wall;
+		tile.FLOOR = Floor.Stone;
 	}
 }

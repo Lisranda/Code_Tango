@@ -53,10 +53,34 @@ public class SpriteLoader : MonoBehaviour {
 
 			uvMap.Add (sprite.name, uvs);
 		}
+	}		
+
+	public Vector2[] GetWorldUVS (Tile tile){
+		string key = tile.FLOOR.ToString ();
+
+		if (uvMap.ContainsKey (key)) {
+			return uvMap [key];
+		}
+		else {
+			Debug.LogError ("There is no UV for tile type: " + key);
+			return uvMap ["NullSprite"];
+		}
 	}
-		
-	public Vector2[] GetUVS (Tile tile){
-		string key = tile.MAT.ToString ();
+
+	public Vector2[] GetWallUVS (Tile tile){
+		string key = tile.WALL.ToString ();
+
+		if (uvMap.ContainsKey (key)) {
+			return uvMap [key];
+		}
+		else {
+			Debug.LogError ("There is no UV for tile type: " + key);
+			return uvMap ["NullSprite"];
+		}
+	}
+
+	public Vector2[] GetOverlayUVS (Tile tile){
+		string key = tile.OVERLAY.ToString ();
 
 		if (uvMap.ContainsKey (key)) {
 			return uvMap [key];
