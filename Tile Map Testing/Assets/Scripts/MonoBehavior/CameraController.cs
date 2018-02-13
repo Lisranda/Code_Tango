@@ -10,7 +10,7 @@ public class CameraController : MonoBehaviour {
 	public int minimumZoom;
 
 	int pixelsPerUnit = 32;
-	int ppuScale = 2;
+	int ppuScale = 1;
 
 	float[] orthoScales;
 
@@ -18,8 +18,9 @@ public class CameraController : MonoBehaviour {
 
 	int shiftMultiplier;
 
-	int currentLevel = TileGenerator.startingLevel - 1;
+	public static int currentLevel = TileGenerator.startingLevel - 1;
 	int newLevel;
+
 
 	void Start (){
 		InitializeCamera ();

@@ -6,8 +6,8 @@ public class TileGenerator : MonoBehaviour {
 
 	public static TileGenerator instance;
 			
-	public static int mapWidth = 125;
-	public static int mapHeight = 125;
+	public static int mapWidth = 200;
+	public static int mapHeight = 200;
 	public static int mapLevels = 60;
 
 	public bool randomSeed;
@@ -18,7 +18,7 @@ public class TileGenerator : MonoBehaviour {
 	public float persistance;
 	public int octaves;
 
-	int worldChunkMax = 125;
+	int worldChunkMax = 25;
 	int wallChunkMax = 25;
 
 	public static int floorMeshArrayRef = 0;
@@ -30,12 +30,14 @@ public class TileGenerator : MonoBehaviour {
 	public static Tile[,,] tiles = new Tile[mapLevels, mapWidth, mapHeight];
 	public static GameObject[] levelArray = new GameObject[mapLevels];
 	static List<Vector2> uvs;
+	static List<List<GameObject>> meshList;
 
 	Noise elevation;
 
 	void Awake (){
 		instance = this;
 		uvs = new List<Vector2> ();
+		meshList = new List<List<GameObject>> ();
 		GenerateElevationNoise ();
 		GenerateTiles ();
 	}
@@ -43,11 +45,13 @@ public class TileGenerator : MonoBehaviour {
 	void Start () {
 		GenerateLevels ();
 	}
-
+						
 	void GenerateLevels(){
 		for (int level = 0; level < mapLevels; level++) {
 			levelArray [level] = new GameObject ("Level: " + (level + 1));
+			meshList.Add (new List<GameObject> ());
 			levelArray [level].transform.position = Vector3.zero;
+			levelArray [level].transform.parent = this.transform;
 			DivideWorldArray (0, 0, level, levelArray [level]);
 			if (level != startingLevel - 1) {
 				levelArray [level].SetActive (false);
@@ -112,6 +116,7 @@ public class TileGenerator : MonoBehaviour {
 	void GenerateWorldMesh(Tile[,,] tilesChunk, int x, int y, int currentLevel, GameObject levelGO){
 		MeshData data = new MeshData (tiles, tilesChunk, currentLevel, x, y, "Floor");
 		GameObject meshGO = new GameObject ("MESH WORLD " + (currentLevel + 1) + " " + x + " " + y);
+		meshList [currentLevel].Add (meshGO);
 
 		for (int i = 0 + x; i < tilesChunk.GetLength (1) + x; i++) {
 			for (int o = 0 + y; o < tilesChunk.GetLength (2) + y; o++) {
@@ -174,6 +179,7 @@ public class TileGenerator : MonoBehaviour {
 	void GenerateWallMesh(Tile[,,] tilesChunk, int x, int y, int currentLevel, GameObject levelGO){
 		MeshData data = new MeshData (tiles, tilesChunk, currentLevel, x, y, "Wall");
 		GameObject meshGO = new GameObject ("MESH WALL " + (currentLevel + 1) + " " + x + " " + y);
+		meshList [currentLevel].Add (meshGO);
 
 		for (int i = 0 + x; i < tilesChunk.GetLength (1) + x; i++) {
 			for (int o = 0 + y; o < tilesChunk.GetLength (2) + y; o++) {
@@ -236,6 +242,7 @@ public class TileGenerator : MonoBehaviour {
 	void GenerateOverlayMesh(Tile[,,] tilesChunk, int x, int y, int currentLevel, GameObject levelGO){
 		MeshData data = new MeshData (tiles, tilesChunk, currentLevel, x, y, "Overlay");
 		GameObject meshGO = new GameObject ("MESH OVERLAY " + (currentLevel + 1) + " " + x + " " + y);
+		meshList [currentLevel].Add (meshGO);
 
 		for (int i = 0 + x; i < tilesChunk.GetLength (1) + x; i++) {
 			for (int o = 0 + y; o < tilesChunk.GetLength (2) + y; o++) {
@@ -266,33 +273,45 @@ public class TileGenerator : MonoBehaviour {
 
 		elevation = new Noise (seed.GetHashCode (), frequency, lacunarity, amplitude, persistance, octaves);
 	}
-
+		
 	public static void RefreshMeshAtTile(Tile t){
-		Mesh mesh = MeshData.GetMeshAtTile (t);
+		GameObject go = t.MESH [0];
+		Mesh mesh = go.GetComponent<MeshFilter> ().mesh;
 
-		int posChunkX = Mathf.FloorToInt (tiles [t.LEVEL, t.X, t.Y].MESH [floorMeshArrayRef].transform.position.x);
-		int posChunkY = Mathf.FloorToInt (tiles [t.LEVEL, t.X, t.Y].MESH [floorMeshArrayRef].transform.position.y);
-		int chunkX = 0;
-		int chunkY = 0;
+		int posChunkX = Mathf.FloorToInt (go.transform.position.x);
+		int posChunkY = Mathf.FloorToInt (go.transform.position.y);
 
-		for (int i = 0; i < tiles.GetLength(1); i++) {
-			if (mesh == tiles [t.LEVEL, i, t.Y].MESH [floorMeshArrayRef].GetComponent<MeshFilter> ().mesh) {
-				chunkX++;				
-			}					
-		}
-		for (int i = 0; i < tiles.GetLength(2); i++) {
-			if (mesh == tiles [t.LEVEL, t.X, i].MESH [floorMeshArrayRef].GetComponent<MeshFilter> ().mesh) {
-				chunkY++;
-			}
-		}
-
-		for (int i = 0; i < chunkX; i++) {
-			for (int o = 0; o < chunkY; o++) {
-				uvs.AddRange (SpriteLoader.instance.GetWorldUVS (TileGenerator.tiles [t.LEVEL, i + posChunkX, o + posChunkY]));
+		for (int i = 0; i < mesh.bounds.size.x; i++) {
+			for (int o = 0; o < mesh.bounds.size.y; o++) {
+				uvs.AddRange (SpriteLoader.instance.GetWorldUVS (tiles [t.LEVEL, i + posChunkX, o + posChunkY]));
 			}
 		}
 
 		mesh.uv = uvs.ToArray ();
 		uvs.Clear ();
+	}
+
+	public static void RefreshFloorMeshes(){
+		int currentLevel = CameraController.currentLevel;
+
+		for (int i = 0; i < meshList[currentLevel].Count; i++) {
+			GameObject go = meshList [currentLevel] [i];
+			Mesh mesh = go.GetComponent<MeshFilter> ().sharedMesh;
+
+			int posChunkX = Mathf.FloorToInt(go.transform.position.x);
+			int posChunkY = Mathf.FloorToInt(go.transform.position.y);
+
+			for (int x = 0; x < mesh.bounds.size.x; x++) {
+				for (int y = 0; y < mesh.bounds.size.y; y++) {
+					uvs.AddRange (SpriteLoader.instance.GetWorldUVS (tiles [currentLevel, x + posChunkX, y + posChunkY]));
+				}
+			}
+
+			mesh.uv = uvs.ToArray ();
+			uvs.Clear ();
+		}
+
+
+
 	}
 }
