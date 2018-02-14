@@ -6,8 +6,8 @@ public class TileGenerator : MonoBehaviour {
 
 	public static TileGenerator instance;
 			
-	public static int mapWidth = 200;
-	public static int mapHeight = 200;
+	public static int mapWidth = 50;
+	public static int mapHeight = 50;
 	public static int mapLevels = 60;
 
 	public bool randomSeed;
@@ -24,6 +24,10 @@ public class TileGenerator : MonoBehaviour {
 	public static int floorMeshArrayRef = 0;
 	public static int wallMeshArrayRef = 1;
 	public static int overlayMeshArrayRef = 2;
+
+	int worldMeshZ = 3;
+	int wallMeshZ = 2;
+	int overlayMeshZ=1;
 
 	public readonly static int startingLevel = 52;
 
@@ -45,6 +49,9 @@ public class TileGenerator : MonoBehaviour {
 	void Start () {
 		GenerateLevels ();
 	}
+
+	void Update(){
+	}
 						
 	void GenerateLevels(){
 		for (int level = 0; level < mapLevels; level++) {
@@ -53,6 +60,8 @@ public class TileGenerator : MonoBehaviour {
 			levelArray [level].transform.position = Vector3.zero;
 			levelArray [level].transform.parent = this.transform;
 			DivideWorldArray (0, 0, level, levelArray [level]);
+			DivideWallArray (0, 0, level, levelArray [level]);
+			DivideOverlayArray (0, 0, level, levelArray [level]);
 			if (level != startingLevel - 1) {
 				levelArray [level].SetActive (false);
 			}
@@ -74,6 +83,33 @@ public class TileGenerator : MonoBehaviour {
 	public void ChangeLevel(int currentLevel, int newLevel){
 		levelArray [currentLevel].SetActive (false);
 		levelArray [newLevel].SetActive (true);
+	}
+
+	public static Tile GetTileAt(int level, int x, int y){
+		if (x >= 0 && x < mapWidth && y >= 0 && y < mapHeight) {
+			Tile t = tiles [level, x, y];
+			return t;
+		} else {
+			return null;
+		}
+	}
+
+	public static Tile[] GetTileNeighbours (Tile t, bool diagonal = false){
+		Tile[] neighbours = new Tile[diagonal ? 8 : 4];
+
+		neighbours [0] = GetTileAt(t.LEVEL, t.X, t.Y + 1);
+		neighbours [1] = GetTileAt(t.LEVEL, t.X + 1, t.Y);
+		neighbours [2] = GetTileAt(t.LEVEL, t.X, t.Y - 1);
+		neighbours [3] = GetTileAt(t.LEVEL, t.X - 1, t.Y);
+
+		if (diagonal) {
+			neighbours [4] = GetTileAt(t.LEVEL, t.X + 1, t.Y + 1);
+			neighbours [5] = GetTileAt(t.LEVEL, t.X + 1, t.Y - 1);
+			neighbours [6] = GetTileAt(t.LEVEL, t.X - 1, t.Y - 1);
+			neighbours [7] = GetTileAt(t.LEVEL, t.X - 1, t.Y + 1);
+		}
+
+		return neighbours;
 	}
 
 	void DivideWorldArray(int dex1, int dex2, int currentLevel, GameObject levelGO){
@@ -126,12 +162,12 @@ public class TileGenerator : MonoBehaviour {
 
 		MeshFilter filter = meshGO.AddComponent<MeshFilter> ();
 		MeshRenderer render = meshGO.AddComponent<MeshRenderer> ();
-		MeshCollider collider = meshGO.AddComponent<MeshCollider> ();
+		//MeshCollider collider = meshGO.AddComponent<MeshCollider> ();
 		meshGO.transform.SetParent (levelGO.transform);
-		meshGO.transform.position = new Vector3 (x, y);
+		meshGO.transform.position = new Vector3 (x, y, worldMeshZ);
 		Mesh mesh = filter.mesh;
-		collider.convex = true;
-		collider.sharedMesh = mesh;
+		//collider.convex = true;
+		//collider.sharedMesh = mesh;
 		render.material = SpriteLoader.worldMaterial;
 
 		mesh.vertices = data.vertices.ToArray ();
@@ -191,7 +227,7 @@ public class TileGenerator : MonoBehaviour {
 		MeshRenderer render = meshGO.AddComponent<MeshRenderer> ();
 		MeshCollider collider = meshGO.AddComponent<MeshCollider> ();
 		meshGO.transform.SetParent (levelGO.transform);
-		meshGO.transform.position = new Vector3 (x, y);
+		meshGO.transform.position = new Vector3 (x, y, wallMeshZ);
 		Mesh mesh = filter.mesh;
 		collider.convex = true;
 		collider.sharedMesh = mesh;
@@ -254,7 +290,7 @@ public class TileGenerator : MonoBehaviour {
 		MeshRenderer render = meshGO.AddComponent<MeshRenderer> ();
 		MeshCollider collider = meshGO.AddComponent<MeshCollider> ();
 		meshGO.transform.SetParent (levelGO.transform);
-		meshGO.transform.position = new Vector3 (x, y);
+		meshGO.transform.position = new Vector3 (x, y, overlayMeshZ);
 		Mesh mesh = filter.mesh;
 		collider.convex = true;
 		collider.sharedMesh = mesh;
@@ -275,20 +311,36 @@ public class TileGenerator : MonoBehaviour {
 	}
 		
 	public static void RefreshMeshAtTile(Tile t){
-		GameObject go = t.MESH [0];
-		Mesh mesh = go.GetComponent<MeshFilter> ().mesh;
+		for (int m = 0; m < t.MESH.Length; m++) {
+			GameObject go = t.MESH [m];
+			Mesh mesh = go.GetComponent<MeshFilter> ().mesh;
 
-		int posChunkX = Mathf.FloorToInt (go.transform.position.x);
-		int posChunkY = Mathf.FloorToInt (go.transform.position.y);
+			int posChunkX = Mathf.FloorToInt (go.transform.position.x);
+			int posChunkY = Mathf.FloorToInt (go.transform.position.y);
 
-		for (int i = 0; i < mesh.bounds.size.x; i++) {
-			for (int o = 0; o < mesh.bounds.size.y; o++) {
-				uvs.AddRange (SpriteLoader.instance.GetWorldUVS (tiles [t.LEVEL, i + posChunkX, o + posChunkY]));
+			for (int i = 0; i < mesh.bounds.size.x; i++) {
+				for (int o = 0; o < mesh.bounds.size.y; o++) {
+					if (m == 0) {
+						uvs.AddRange (SpriteLoader.instance.GetWorldUVS (tiles [t.LEVEL, i + posChunkX, o + posChunkY]));
+						mesh.uv = uvs.ToArray ();
+						uvs.Clear ();
+					} else if (m == 1) {
+						//uvs.AddRange (SpriteLoader.instance.GetWallUVS (tiles [t.LEVEL, i + posChunkX, o + posChunkY].WALL, 1));
+						//uvs.AddRange (SpriteLoader.instance.GetWallUVS (tiles [t.LEVEL, i + posChunkX, o + posChunkY].WALL, 2));
+						//uvs.AddRange (SpriteLoader.instance.GetWallUVS (tiles [t.LEVEL, i + posChunkX, o + posChunkY].WALL, 3));
+						//uvs.AddRange (SpriteLoader.instance.GetWallUVS (tiles [t.LEVEL, i + posChunkX, o + posChunkY].WALL, 4));
+						//mesh.uv = uvs.ToArray ();
+						//uvs.Clear ();
+					} else if (m == 2) {
+						uvs.AddRange (SpriteLoader.instance.GetOverlayUVS (tiles [t.LEVEL, i + posChunkX, o + posChunkY]));
+						mesh.uv = uvs.ToArray ();
+						uvs.Clear ();
+					} else {
+						Debug.LogError ("RefreshMeshAtTile failed because it is trying to get UVS for a layer that doesn't exist in the tile.MESH array.");
+					}
+				}
 			}
 		}
-
-		mesh.uv = uvs.ToArray ();
-		uvs.Clear ();
 	}
 
 	public static void RefreshFloorMeshes(){

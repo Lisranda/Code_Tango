@@ -57,8 +57,17 @@ public class MeshData {
 
 		uvs.AddRange (SpriteLoader.instance.GetWorldUVS (tile));
 	}
-
+		
 	void GenerateWallSquare (Tile tile, int x, int y){
+		Tile[] neighbours = TileGenerator.GetTileNeighbours (tile, true);
+
+		GenerateQuads (neighbours, tile, x, y, 1);
+		GenerateQuads (neighbours, tile, x + 0.5f, y, 2);
+		GenerateQuads (neighbours, tile, x, y + 0.5f, 3);
+		GenerateQuads (neighbours, tile, x + 0.5f, y + 0.5f, 4);
+	}
+
+	void GenerateQuads (Tile[] neighbours, Tile tile, float x, float y, int quadrant){
 		vertices.Add (new Vector3 (x + 0, y + 0));
 		vertices.Add (new Vector3 (x + 0.5f, y + 0));
 		vertices.Add (new Vector3 (x + 0, y + 0.5f));
@@ -72,7 +81,7 @@ public class MeshData {
 		triangles.Add (vertices.Count - 1);
 		triangles.Add (vertices.Count - 4);
 
-		uvs.AddRange (SpriteLoader.instance.GetWallUVS (tile));
+		uvs.AddRange (SpriteLoader.instance.GetWallUVS (neighbours, tile.WALL, quadrant));
 	}
 
 	void GenerateOverlaySquare (Tile tile, int x, int y){

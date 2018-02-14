@@ -1,6 +1,6 @@
 fileFormatVersion: 2
 guid: 8ede5b1c7f26fe04f92c5a6a4758feb5
-timeCreated: 1518317270
+timeCreated: 1518586038
 licenseType: Free
 TextureImporter:
   fileIDToRecycleName:
@@ -11,22 +11,22 @@ TextureImporter:
     21300008: Water
     21300010: NullTile
     21300012: Empty
-    21300014: Wall_NW_Corner
-    21300016: Wall_NW_Top
-    21300018: Wall_NE_Top
-    21300020: Wall_NE_Corner
-    21300022: Wall_NW_Side
-    21300024: Wall_NW_Middle
-    21300026: Wall_NE_Middle
-    21300028: Wall_NE_Side
-    21300030: Wall_SW-Side
-    21300032: Wall_SW_Corner
-    21300034: Wall_SW_Middle
-    21300036: Wall_SW_Top
-    21300038: Wall_SE_Middle
-    21300040: Wall_SE_Top
-    21300042: Wall_SE_Corner
-    21300044: Wall_SE_Side
+    21300014: Wall_3_NWNW
+    21300016: Wall_3_N
+    21300018: Wall_4_N
+    21300020: Wall_4_NENE
+    21300022: Wall_3_W
+    21300024: Wall_3_
+    21300026: Wall_4_
+    21300028: Wall_4_E
+    21300030: Wall_1_W
+    21300032: Wall_1_SW
+    21300034: Wall_1_
+    21300036: Wall_1_S
+    21300038: Wall_2_
+    21300040: Wall_2_S
+    21300042: Wall_2_ESSE
+    21300044: Wall_2_E
     21300046: Wall_NW_InvCorner
     21300048: Wall_NE_InvCorner
     21300050: Wall_SW_InvCorner
@@ -205,7 +205,7 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
     - serializedVersion: 2
-      name: Wall_NW_Corner
+      name: Wall_3_NWNW
       rect:
         serializedVersion: 2
         x: 0
@@ -219,7 +219,7 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
     - serializedVersion: 2
-      name: Wall_NW_Top
+      name: Wall_3_N
       rect:
         serializedVersion: 2
         x: 16
@@ -233,7 +233,7 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
     - serializedVersion: 2
-      name: Wall_NE_Top
+      name: Wall_4_N
       rect:
         serializedVersion: 2
         x: 32
@@ -247,7 +247,7 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
     - serializedVersion: 2
-      name: Wall_NE_Corner
+      name: Wall_4_NENE
       rect:
         serializedVersion: 2
         x: 48
@@ -261,7 +261,7 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
     - serializedVersion: 2
-      name: Wall_NW_Side
+      name: Wall_3_W
       rect:
         serializedVersion: 2
         x: 0
@@ -275,7 +275,7 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
     - serializedVersion: 2
-      name: Wall_NW_Middle
+      name: Wall_3_
       rect:
         serializedVersion: 2
         x: 16
@@ -289,7 +289,7 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
     - serializedVersion: 2
-      name: Wall_NE_Middle
+      name: Wall_4_
       rect:
         serializedVersion: 2
         x: 32
@@ -303,7 +303,7 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
     - serializedVersion: 2
-      name: Wall_NE_Side
+      name: Wall_4_E
       rect:
         serializedVersion: 2
         x: 48
@@ -317,7 +317,7 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
     - serializedVersion: 2
-      name: Wall_SW-Side
+      name: Wall_1_W
       rect:
         serializedVersion: 2
         x: 64
@@ -331,7 +331,7 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
     - serializedVersion: 2
-      name: Wall_SW_Corner
+      name: Wall_1_SW
       rect:
         serializedVersion: 2
         x: 64
@@ -345,7 +345,7 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
     - serializedVersion: 2
-      name: Wall_SW_Middle
+      name: Wall_1_
       rect:
         serializedVersion: 2
         x: 80
@@ -359,7 +359,7 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
     - serializedVersion: 2
-      name: Wall_SW_Top
+      name: Wall_1_S
       rect:
         serializedVersion: 2
         x: 80
@@ -373,7 +373,7 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
     - serializedVersion: 2
-      name: Wall_SE_Middle
+      name: Wall_2_
       rect:
         serializedVersion: 2
         x: 96
@@ -387,7 +387,7 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
     - serializedVersion: 2
-      name: Wall_SE_Top
+      name: Wall_2_S
       rect:
         serializedVersion: 2
         x: 96
@@ -401,7 +401,7 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
     - serializedVersion: 2
-      name: Wall_SE_Corner
+      name: Wall_2_ESSE
       rect:
         serializedVersion: 2
         x: 112
@@ -415,7 +415,7 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
     - serializedVersion: 2
-      name: Wall_SE_Side
+      name: Wall_2_E
       rect:
         serializedVersion: 2
         x: 112

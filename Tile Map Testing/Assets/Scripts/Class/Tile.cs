@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class Tile {
-	public enum Wall {Empty, Wall};
+	public enum Wall {Empty, Wall, Water};
 	public Wall WALL;
 	public enum Floor {Empty, Grass, Dirt, Stone, Sand, Water};
 	public Floor FLOOR;
@@ -44,23 +44,8 @@ public class Tile {
 					this.FLOOR = Floor.Stone;
 					this.OVERLAY = Overlay.Empty;
 				}
-
 			}
 		}
-
-		//if (ELEVATION > 0.4f) {
-		//	this.MAT = Stuff.Grass;
-		//} else {
-		//	this.MAT = Stuff.Dirt;
-		//}
-
-
-		//Use this debug to see the levels as separate materials
-		//if (LEVEL % 2 == 1) {
-		//	this.TYPE = Type.Dirt;
-		//} else {
-		//	this.TYPE = Type.Grass;
-		//}
 	}		
 
 	public Vector3 Position(){

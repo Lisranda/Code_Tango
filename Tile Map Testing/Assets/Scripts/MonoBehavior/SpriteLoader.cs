@@ -67,8 +67,45 @@ public class SpriteLoader : MonoBehaviour {
 		}
 	}
 
-	public Vector2[] GetWallUVS (Tile tile){
-		string key = tile.WALL.ToString ();
+	public Vector2[] GetWallUVS (Tile[] neighbours, Tile.Wall wall, int quadrant){
+		if (wall == Tile.Wall.Empty) {
+			return uvMap ["Empty"];
+		}			
+
+		string key = wall.ToString () + "_" + quadrant.ToString () + "_";
+		if (quadrant == 1) {
+			if (neighbours [2] == null || neighbours [2].WALL == Tile.Wall.Empty)
+				key += "S";
+			if (neighbours [3] == null || neighbours [3].WALL == Tile.Wall.Empty)
+				key += "W";
+			if (neighbours [6] == null || neighbours [6].WALL == Tile.Wall.Empty)
+				key += "";
+		}else if (quadrant == 2) {
+			if (neighbours [1] == null || neighbours [1].WALL == Tile.Wall.Empty)
+				key += "";
+			if (neighbours [2] == null || neighbours [2].WALL == Tile.Wall.Empty)
+				key += "";
+			if (neighbours [5] == null || neighbours [5].WALL == Tile.Wall.Empty)
+				key += "";
+		} else if (quadrant == 3) {
+			if (neighbours [0] == null || neighbours [0].WALL == Tile.Wall.Empty)
+				key += "";
+			if (neighbours [3] == null || neighbours [3].WALL == Tile.Wall.Empty)
+				key += "";
+			if (neighbours [7] == null || neighbours [7].WALL == Tile.Wall.Empty)
+				key += "";
+		}else if (quadrant == 4) {
+			if (neighbours [0] == null || neighbours [0].WALL == Tile.Wall.Empty)
+				key += "";
+			if (neighbours [1] == null || neighbours [1].WALL == Tile.Wall.Empty)
+				key += "";
+			if (neighbours [4] == null || neighbours [4].WALL == Tile.Wall.Empty)
+				key += "";
+		}
+
+
+
+
 
 		if (uvMap.ContainsKey (key)) {
 			return uvMap [key];
@@ -90,4 +127,6 @@ public class SpriteLoader : MonoBehaviour {
 			return uvMap ["NullSprite"];
 		}
 	}
+
+
 }
