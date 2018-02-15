@@ -1,6 +1,6 @@
 fileFormatVersion: 2
 guid: 8ede5b1c7f26fe04f92c5a6a4758feb5
-timeCreated: 1518586038
+timeCreated: 1518721871
 licenseType: Free
 TextureImporter:
   fileIDToRecycleName:
@@ -11,26 +11,27 @@ TextureImporter:
     21300008: Water
     21300010: NullTile
     21300012: Empty
-    21300014: Wall_3_NWNW
+    21300014: Wall_3_Cor
     21300016: Wall_3_N
     21300018: Wall_4_N
-    21300020: Wall_4_NENE
+    21300020: Wall_4_Cor
     21300022: Wall_3_W
     21300024: Wall_3_
     21300026: Wall_4_
     21300028: Wall_4_E
     21300030: Wall_1_W
-    21300032: Wall_1_SW
+    21300032: Wall_1_Cor
     21300034: Wall_1_
     21300036: Wall_1_S
     21300038: Wall_2_
     21300040: Wall_2_S
-    21300042: Wall_2_ESSE
+    21300042: Wall_2_Cor
     21300044: Wall_2_E
-    21300046: Wall_NW_InvCorner
-    21300048: Wall_NE_InvCorner
-    21300050: Wall_SW_InvCorner
-    21300052: Wall_SE_InvCorner
+    21300046: Wall_3_InvCor
+    21300048: Wall_4_InvCor
+    21300050: Wall_1_InvCor
+    21300052: Wall_2_InvCor
+    21300054: SelectTile
   externalObjects: {}
   serializedVersion: 4
   mipmaps:
@@ -205,7 +206,7 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
     - serializedVersion: 2
-      name: Wall_3_NWNW
+      name: Wall_3_Cor
       rect:
         serializedVersion: 2
         x: 0
@@ -247,7 +248,7 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
     - serializedVersion: 2
-      name: Wall_4_NENE
+      name: Wall_4_Cor
       rect:
         serializedVersion: 2
         x: 48
@@ -331,7 +332,7 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
     - serializedVersion: 2
-      name: Wall_1_SW
+      name: Wall_1_Cor
       rect:
         serializedVersion: 2
         x: 64
@@ -401,7 +402,7 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
     - serializedVersion: 2
-      name: Wall_2_ESSE
+      name: Wall_2_Cor
       rect:
         serializedVersion: 2
         x: 112
@@ -429,7 +430,7 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
     - serializedVersion: 2
-      name: Wall_NW_InvCorner
+      name: Wall_3_InvCor
       rect:
         serializedVersion: 2
         x: 128
@@ -443,7 +444,7 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
     - serializedVersion: 2
-      name: Wall_NE_InvCorner
+      name: Wall_4_InvCor
       rect:
         serializedVersion: 2
         x: 144
@@ -457,7 +458,7 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
     - serializedVersion: 2
-      name: Wall_SW_InvCorner
+      name: Wall_1_InvCor
       rect:
         serializedVersion: 2
         x: 128
@@ -471,13 +472,27 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
     - serializedVersion: 2
-      name: Wall_SE_InvCorner
+      name: Wall_2_InvCor
       rect:
         serializedVersion: 2
         x: 144
         y: 0
         width: 16
         height: 16
+      alignment: 6
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: SelectTile
+      rect:
+        serializedVersion: 2
+        x: 192
+        y: 32
+        width: 32
+        height: 32
       alignment: 6
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}

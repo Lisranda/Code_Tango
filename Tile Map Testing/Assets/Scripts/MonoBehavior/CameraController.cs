@@ -77,8 +77,8 @@ public class CameraController : MonoBehaviour {
 			int camX = Mathf.FloorToInt (Camera.main.ScreenToWorldPoint (Input.mousePosition).x);
 			int camY = Mathf.FloorToInt (Camera.main.ScreenToWorldPoint (Input.mousePosition).y);
 
-			Tile.BuildWall (TileGenerator.tiles [currentLevel, camX, camY]);
-			MeshRefresh.refreshList.Add (TileGenerator.tiles [currentLevel, camX, camY].MESH [0]);
+			Tile.Dig (TileGenerator.tiles [currentLevel, camX, camY]);
+			MeshRefresh.refreshList.Add (TileGenerator.tiles [currentLevel, camX, camY].MESH [1]);
 			//MeshRefresh.RefreshAllMeshAtTile (TileGenerator.tiles [currentLevel, camX, camY]);
 		}
 	}

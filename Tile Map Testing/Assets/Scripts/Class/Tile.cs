@@ -40,7 +40,7 @@ public class Tile {
 					this.FLOOR = Floor.Grass;
 					this.OVERLAY = Overlay.Empty;
 				} else {
-					this.WALL = Wall.Empty;
+					this.WALL = Wall.Wall;
 					this.FLOOR = Floor.Stone;
 					this.OVERLAY = Overlay.Empty;
 				}
@@ -61,5 +61,9 @@ public class Tile {
 		tile.WALL = Wall.Empty;
 		tile.FLOOR = Floor.Stone;
 		tile.OVERLAY = Overlay.Empty;
+	}
+
+	public static void Dig(Tile tile){
+		tile.WALL = Wall.Empty;
 	}
 }

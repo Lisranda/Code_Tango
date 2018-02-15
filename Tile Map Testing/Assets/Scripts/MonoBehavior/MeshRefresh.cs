@@ -9,6 +9,7 @@ public class MeshRefresh : MonoBehaviour {
 	public static List<GameObject> refreshList;
 	public static List<GameObject> uniqueRefreshList;
 	static List<Vector2> uvs;
+	Tile[] neighbours;
 
 	void Awake(){
 		instance = this;
@@ -19,8 +20,6 @@ public class MeshRefresh : MonoBehaviour {
 
 	void LateUpdate(){
 		RefreshMeshFromList ();
-		Debug.Log ("Full: " + refreshList.Count);
-		Debug.Log ("Unique: " + uniqueRefreshList.Count);
 	}
 
 	public static void AddMeshRefresh(GameObject m, int level){
@@ -28,7 +27,6 @@ public class MeshRefresh : MonoBehaviour {
 	}
 
 	static void RemoveDuplicates(){
-		//uniqueRefreshList = refreshList.Distinct ().ToList ();
 		uniqueRefreshList.AddRange (refreshList.Distinct ().ToList ());
 		refreshList.Clear ();
 	}
@@ -49,10 +47,11 @@ public class MeshRefresh : MonoBehaviour {
 					if (layer == DataTracker.Layer.Floor) {
 						uvs.AddRange (SpriteLoader.instance.GetWorldUVS (TileGenerator.tiles [level, i + posChunkX, o + posChunkY]));
 					} else if (layer == DataTracker.Layer.Wall) {
-						//uvs.AddRange (SpriteLoader.instance.GetWallUVS (TileGenerator.tiles [level, i + posChunkX, o + posChunkY].WALL, 1));
-						//uvs.AddRange (SpriteLoader.instance.GetWallUVS (TileGenerator.tiles [level, i + posChunkX, o + posChunkY].WALL, 2));
-						//uvs.AddRange (SpriteLoader.instance.GetWallUVS (TileGenerator.tiles [level, i + posChunkX, o + posChunkY].WALL, 3));
-						//uvs.AddRange (SpriteLoader.instance.GetWallUVS (TileGenerator.tiles [level, i + posChunkX, o + posChunkY].WALL, 4));
+						neighbours = TileGenerator.GetTileNeighbours (TileGenerator.tiles [level, i + posChunkX, o + posChunkY], true);
+						uvs.AddRange (SpriteLoader.instance.GetWallUVS (neighbours, TileGenerator.tiles [level, i + posChunkX, o + posChunkY].WALL, 1));
+						uvs.AddRange (SpriteLoader.instance.GetWallUVS (neighbours, TileGenerator.tiles [level, i + posChunkX, o + posChunkY].WALL, 2));
+						uvs.AddRange (SpriteLoader.instance.GetWallUVS (neighbours, TileGenerator.tiles [level, i + posChunkX, o + posChunkY].WALL, 3));
+						uvs.AddRange (SpriteLoader.instance.GetWallUVS (neighbours, TileGenerator.tiles [level, i + posChunkX, o + posChunkY].WALL, 4));
 					} else if (layer == DataTracker.Layer.Overlay) {
 						uvs.AddRange (SpriteLoader.instance.GetOverlayUVS (TileGenerator.tiles [level, i + posChunkX, o + posChunkY]));
 					} else {
@@ -63,7 +62,6 @@ public class MeshRefresh : MonoBehaviour {
 			mesh.uv = uvs.ToArray ();
 			uvs.Clear ();
 			uniqueRefreshList.RemoveAt (0);
-			refreshList.InsertRange (0, uniqueRefreshList);
 		}
 	}
 

@@ -63,8 +63,15 @@ public class SpriteLoader : MonoBehaviour {
 		}
 		else {
 			Debug.LogError ("There is no UV for tile type: " + key);
-			return uvMap ["NullSprite"];
+			return uvMap ["NullTile"];
 		}
+	}
+
+	bool IsEmptyOrNull(Tile[] neighbours, int arrayPos){
+		if (neighbours [arrayPos] == null || neighbours [arrayPos].WALL == Tile.Wall.Empty) {
+			return true;
+		} else
+			return false;
 	}
 
 	public Vector2[] GetWallUVS (Tile[] neighbours, Tile.Wall wall, int quadrant){
@@ -73,46 +80,58 @@ public class SpriteLoader : MonoBehaviour {
 		}			
 
 		string key = wall.ToString () + "_" + quadrant.ToString () + "_";
+
 		if (quadrant == 1) {
-			if (neighbours [2] == null || neighbours [2].WALL == Tile.Wall.Empty)
+			if (IsEmptyOrNull (neighbours, 2) && IsEmptyOrNull (neighbours, 3) && IsEmptyOrNull (neighbours, 6)) {
+				key += "Cor";
+			} else if (!IsEmptyOrNull (neighbours, 2) && !IsEmptyOrNull (neighbours, 3) && IsEmptyOrNull (neighbours, 6)) {
+				key += "InvCor";
+			} else if (IsEmptyOrNull (neighbours, 2)) {
 				key += "S";
-			if (neighbours [3] == null || neighbours [3].WALL == Tile.Wall.Empty)
+			} else if (IsEmptyOrNull (neighbours, 3)) {
 				key += "W";
-			if (neighbours [6] == null || neighbours [6].WALL == Tile.Wall.Empty)
-				key += "";
-		}else if (quadrant == 2) {
-			if (neighbours [1] == null || neighbours [1].WALL == Tile.Wall.Empty)
-				key += "";
-			if (neighbours [2] == null || neighbours [2].WALL == Tile.Wall.Empty)
-				key += "";
-			if (neighbours [5] == null || neighbours [5].WALL == Tile.Wall.Empty)
-				key += "";
-		} else if (quadrant == 3) {
-			if (neighbours [0] == null || neighbours [0].WALL == Tile.Wall.Empty)
-				key += "";
-			if (neighbours [3] == null || neighbours [3].WALL == Tile.Wall.Empty)
-				key += "";
-			if (neighbours [7] == null || neighbours [7].WALL == Tile.Wall.Empty)
-				key += "";
-		}else if (quadrant == 4) {
-			if (neighbours [0] == null || neighbours [0].WALL == Tile.Wall.Empty)
-				key += "";
-			if (neighbours [1] == null || neighbours [1].WALL == Tile.Wall.Empty)
-				key += "";
-			if (neighbours [4] == null || neighbours [4].WALL == Tile.Wall.Empty)
-				key += "";
+			}
 		}
-
-
-
-
+		if (quadrant == 2) {
+			if (IsEmptyOrNull (neighbours, 1) && IsEmptyOrNull (neighbours, 2) && IsEmptyOrNull (neighbours, 5)) {
+				key += "Cor";
+			} else if (!IsEmptyOrNull (neighbours, 1) && !IsEmptyOrNull (neighbours, 2) && IsEmptyOrNull (neighbours, 5)) {
+				key += "InvCor";
+			} else if (IsEmptyOrNull (neighbours, 1)) {
+				key += "E";
+			} else if (IsEmptyOrNull (neighbours, 2)) {
+				key += "S";
+			}
+		}
+		if (quadrant == 3) {
+			if (IsEmptyOrNull (neighbours, 0) && IsEmptyOrNull (neighbours, 3) && IsEmptyOrNull (neighbours, 7)) {
+				key += "Cor";
+			} else if (!IsEmptyOrNull (neighbours, 0) && !IsEmptyOrNull (neighbours, 3) && IsEmptyOrNull (neighbours, 7)) {
+				key += "InvCor";
+			} else if (IsEmptyOrNull (neighbours, 0)) {
+				key += "N";
+			} else if (IsEmptyOrNull (neighbours, 3)) {
+				key += "W";
+			}
+		}
+		if (quadrant == 4) {
+			if (IsEmptyOrNull (neighbours, 0) && IsEmptyOrNull (neighbours, 1) && IsEmptyOrNull (neighbours, 4)) {
+				key += "Cor";
+			} else if (!IsEmptyOrNull (neighbours, 0) && !IsEmptyOrNull (neighbours, 1) && IsEmptyOrNull (neighbours, 4)) {
+				key += "InvCor";
+			} else if (IsEmptyOrNull (neighbours, 0)) {
+				key += "N";
+			} else if (IsEmptyOrNull (neighbours, 1)) {
+				key += "E";
+			}
+		}
 
 		if (uvMap.ContainsKey (key)) {
 			return uvMap [key];
 		}
 		else {
 			Debug.LogError ("There is no UV for tile type: " + key);
-			return uvMap ["NullSprite"];
+			return uvMap ["NullTile"];
 		}
 	}
 
@@ -124,7 +143,7 @@ public class SpriteLoader : MonoBehaviour {
 		}
 		else {
 			Debug.LogError ("There is no UV for tile type: " + key);
-			return uvMap ["NullSprite"];
+			return uvMap ["NullTile"];
 		}
 	}
 
