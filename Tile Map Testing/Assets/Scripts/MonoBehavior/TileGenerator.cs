@@ -33,14 +33,12 @@ public class TileGenerator : MonoBehaviour {
 
 	public static Tile[,,] tiles = new Tile[mapLevels, mapWidth, mapHeight];
 	public static GameObject[] levelArray = new GameObject[mapLevels];
-	static List<Vector2> uvs;
-	static List<List<GameObject>> meshList;
+	public static List<List<GameObject>> meshList;
 
 	Noise elevation;
 
 	void Awake (){
 		instance = this;
-		uvs = new List<Vector2> ();
 		meshList = new List<List<GameObject>> ();
 		GenerateElevationNoise ();
 		GenerateTiles ();
@@ -152,6 +150,9 @@ public class TileGenerator : MonoBehaviour {
 	void GenerateWorldMesh(Tile[,,] tilesChunk, int x, int y, int currentLevel, GameObject levelGO){
 		MeshData data = new MeshData (tiles, tilesChunk, currentLevel, x, y, "Floor");
 		GameObject meshGO = new GameObject ("MESH WORLD " + (currentLevel + 1) + " " + x + " " + y);
+		DataTracker tracker = meshGO.AddComponent<DataTracker> ();
+		tracker.level = currentLevel;
+		tracker.layer = DataTracker.Layer.Floor;
 		meshList [currentLevel].Add (meshGO);
 
 		for (int i = 0 + x; i < tilesChunk.GetLength (1) + x; i++) {
@@ -215,6 +216,9 @@ public class TileGenerator : MonoBehaviour {
 	void GenerateWallMesh(Tile[,,] tilesChunk, int x, int y, int currentLevel, GameObject levelGO){
 		MeshData data = new MeshData (tiles, tilesChunk, currentLevel, x, y, "Wall");
 		GameObject meshGO = new GameObject ("MESH WALL " + (currentLevel + 1) + " " + x + " " + y);
+		DataTracker tracker = meshGO.AddComponent<DataTracker> ();
+		tracker.level = currentLevel;
+		tracker.layer = DataTracker.Layer.Wall;
 		meshList [currentLevel].Add (meshGO);
 
 		for (int i = 0 + x; i < tilesChunk.GetLength (1) + x; i++) {
@@ -278,6 +282,9 @@ public class TileGenerator : MonoBehaviour {
 	void GenerateOverlayMesh(Tile[,,] tilesChunk, int x, int y, int currentLevel, GameObject levelGO){
 		MeshData data = new MeshData (tiles, tilesChunk, currentLevel, x, y, "Overlay");
 		GameObject meshGO = new GameObject ("MESH OVERLAY " + (currentLevel + 1) + " " + x + " " + y);
+		DataTracker tracker = meshGO.AddComponent<DataTracker> ();
+		tracker.level = currentLevel;
+		tracker.layer = DataTracker.Layer.Overlay;
 		meshList [currentLevel].Add (meshGO);
 
 		for (int i = 0 + x; i < tilesChunk.GetLength (1) + x; i++) {
@@ -308,62 +315,5 @@ public class TileGenerator : MonoBehaviour {
 		}
 
 		elevation = new Noise (seed.GetHashCode (), frequency, lacunarity, amplitude, persistance, octaves);
-	}
-		
-	public static void RefreshMeshAtTile(Tile t){
-		for (int m = 0; m < t.MESH.Length; m++) {
-			GameObject go = t.MESH [m];
-			Mesh mesh = go.GetComponent<MeshFilter> ().mesh;
-
-			int posChunkX = Mathf.FloorToInt (go.transform.position.x);
-			int posChunkY = Mathf.FloorToInt (go.transform.position.y);
-
-			for (int i = 0; i < mesh.bounds.size.x; i++) {
-				for (int o = 0; o < mesh.bounds.size.y; o++) {
-					if (m == 0) {
-						uvs.AddRange (SpriteLoader.instance.GetWorldUVS (tiles [t.LEVEL, i + posChunkX, o + posChunkY]));
-						mesh.uv = uvs.ToArray ();
-						uvs.Clear ();
-					} else if (m == 1) {
-						//uvs.AddRange (SpriteLoader.instance.GetWallUVS (tiles [t.LEVEL, i + posChunkX, o + posChunkY].WALL, 1));
-						//uvs.AddRange (SpriteLoader.instance.GetWallUVS (tiles [t.LEVEL, i + posChunkX, o + posChunkY].WALL, 2));
-						//uvs.AddRange (SpriteLoader.instance.GetWallUVS (tiles [t.LEVEL, i + posChunkX, o + posChunkY].WALL, 3));
-						//uvs.AddRange (SpriteLoader.instance.GetWallUVS (tiles [t.LEVEL, i + posChunkX, o + posChunkY].WALL, 4));
-						//mesh.uv = uvs.ToArray ();
-						//uvs.Clear ();
-					} else if (m == 2) {
-						uvs.AddRange (SpriteLoader.instance.GetOverlayUVS (tiles [t.LEVEL, i + posChunkX, o + posChunkY]));
-						mesh.uv = uvs.ToArray ();
-						uvs.Clear ();
-					} else {
-						Debug.LogError ("RefreshMeshAtTile failed because it is trying to get UVS for a layer that doesn't exist in the tile.MESH array.");
-					}
-				}
-			}
-		}
-	}
-
-	public static void RefreshFloorMeshes(){
-		int currentLevel = CameraController.currentLevel;
-
-		for (int i = 0; i < meshList[currentLevel].Count; i++) {
-			GameObject go = meshList [currentLevel] [i];
-			Mesh mesh = go.GetComponent<MeshFilter> ().sharedMesh;
-
-			int posChunkX = Mathf.FloorToInt(go.transform.position.x);
-			int posChunkY = Mathf.FloorToInt(go.transform.position.y);
-
-			for (int x = 0; x < mesh.bounds.size.x; x++) {
-				for (int y = 0; y < mesh.bounds.size.y; y++) {
-					uvs.AddRange (SpriteLoader.instance.GetWorldUVS (tiles [currentLevel, x + posChunkX, y + posChunkY]));
-				}
-			}
-
-			mesh.uv = uvs.ToArray ();
-			uvs.Clear ();
-		}
-
-
-
 	}
 }
