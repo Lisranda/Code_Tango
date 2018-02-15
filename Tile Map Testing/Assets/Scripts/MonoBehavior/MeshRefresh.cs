@@ -18,7 +18,9 @@ public class MeshRefresh : MonoBehaviour {
 	}
 
 	void LateUpdate(){
-		//RefreshMeshFromList ();
+		RefreshMeshFromList ();
+		Debug.Log ("Full: " + refreshList.Count);
+		Debug.Log ("Unique: " + uniqueRefreshList.Count);
 	}
 
 	public static void AddMeshRefresh(GameObject m, int level){
@@ -26,11 +28,13 @@ public class MeshRefresh : MonoBehaviour {
 	}
 
 	static void RemoveDuplicates(){
-		uniqueRefreshList = refreshList.Distinct ().ToList ();
+		//uniqueRefreshList = refreshList.Distinct ().ToList ();
+		uniqueRefreshList.AddRange (refreshList.Distinct ().ToList ());
+		refreshList.Clear ();
 	}
 
 	void RefreshMeshFromList(){
-		if (refreshList.Count > 0) {			
+		if (refreshList.Count > 0 || uniqueRefreshList.Count > 0) {			
 			RemoveDuplicates ();
 			GameObject go = uniqueRefreshList [0];
 			Mesh mesh = go.GetComponent<MeshFilter> ().mesh;
