@@ -47,16 +47,7 @@ public class Tile {
 			}
 		}
 	}		
-
-	public Vector3 Position(){
-		return new Vector3 (this.X, this.Y, 0);
-	}
-
-	public static Tile GetTileAt(int level, int x, int y){
-		Tile t = TileGenerator.tiles [level, x, y];
-		return t;
-	}
-
+		
 	public static void BuildWall(Tile tile){
 		tile.WALL = Wall.Empty;
 		tile.FLOOR = Floor.Stone;

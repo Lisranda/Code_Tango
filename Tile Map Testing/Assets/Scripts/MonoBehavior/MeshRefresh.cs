@@ -20,11 +20,7 @@ public class MeshRefresh : MonoBehaviour {
 
 	void LateUpdate(){
 		RefreshMeshFromList ();
-	}
-
-	public static void AddMeshRefresh(GameObject m, int level){
-		refreshList.Add (m);
-	}
+	}		
 
 	static void RemoveDuplicates(){
 		uniqueRefreshList.AddRange (refreshList.Distinct ().ToList ());

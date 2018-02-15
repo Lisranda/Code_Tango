@@ -20,6 +20,13 @@ public class SpriteLoader : MonoBehaviour {
 		InitializeSpriteUVs ();
 	}
 
+	bool IsEmptyOrNull(Tile[] neighbours, int arrayPos){
+		if (neighbours [arrayPos] == null || neighbours [arrayPos].WALL == Tile.Wall.Empty) {
+			return true;
+		} else
+			return false;
+	}
+
 	void ImportSprites(){
 		SpriteArray = Resources.LoadAll<Sprite> ("Sprites");
 	}
@@ -67,13 +74,6 @@ public class SpriteLoader : MonoBehaviour {
 		}
 	}
 
-	bool IsEmptyOrNull(Tile[] neighbours, int arrayPos){
-		if (neighbours [arrayPos] == null || neighbours [arrayPos].WALL == Tile.Wall.Empty) {
-			return true;
-		} else
-			return false;
-	}
-
 	public Vector2[] GetWallUVS (Tile[] neighbours, Tile.Wall wall, int quadrant){
 		if (wall == Tile.Wall.Empty) {
 			return uvMap ["Empty"];
@@ -91,8 +91,7 @@ public class SpriteLoader : MonoBehaviour {
 			} else if (IsEmptyOrNull (neighbours, 3)) {
 				key += "W";
 			}
-		}
-		if (quadrant == 2) {
+		} else if (quadrant == 2) {
 			if (IsEmptyOrNull (neighbours, 1) && IsEmptyOrNull (neighbours, 2) && IsEmptyOrNull (neighbours, 5)) {
 				key += "Cor";
 			} else if (!IsEmptyOrNull (neighbours, 1) && !IsEmptyOrNull (neighbours, 2) && IsEmptyOrNull (neighbours, 5)) {
@@ -102,8 +101,7 @@ public class SpriteLoader : MonoBehaviour {
 			} else if (IsEmptyOrNull (neighbours, 2)) {
 				key += "S";
 			}
-		}
-		if (quadrant == 3) {
+		} else if (quadrant == 3) {
 			if (IsEmptyOrNull (neighbours, 0) && IsEmptyOrNull (neighbours, 3) && IsEmptyOrNull (neighbours, 7)) {
 				key += "Cor";
 			} else if (!IsEmptyOrNull (neighbours, 0) && !IsEmptyOrNull (neighbours, 3) && IsEmptyOrNull (neighbours, 7)) {
@@ -113,8 +111,7 @@ public class SpriteLoader : MonoBehaviour {
 			} else if (IsEmptyOrNull (neighbours, 3)) {
 				key += "W";
 			}
-		}
-		if (quadrant == 4) {
+		} else if (quadrant == 4) {
 			if (IsEmptyOrNull (neighbours, 0) && IsEmptyOrNull (neighbours, 1) && IsEmptyOrNull (neighbours, 4)) {
 				key += "Cor";
 			} else if (!IsEmptyOrNull (neighbours, 0) && !IsEmptyOrNull (neighbours, 1) && IsEmptyOrNull (neighbours, 4)) {
