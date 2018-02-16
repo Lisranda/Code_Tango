@@ -7,7 +7,7 @@ public class Tile {
 	public Wall WALL;
 	public enum Floor {Empty, Grass, Dirt, Stone, Sand, Water};
 	public Floor FLOOR;
-	public enum Overlay {Empty, Grass};
+	public enum Overlay {Empty, SelectTile};
 	public Overlay OVERLAY;
 	public readonly int X;
 	public readonly int Y;

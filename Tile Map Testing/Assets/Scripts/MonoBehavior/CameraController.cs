@@ -81,6 +81,8 @@ public class CameraController : MonoBehaviour {
 			MeshRefresh.refreshList.Add (TileGenerator.tiles [currentLevel, camX, camY].MESH [1]);
 			//MeshRefresh.RefreshAllMeshAtTile (TileGenerator.tiles [currentLevel, camX, camY]);
 		}
+
+
 	}
 
 	public void InitializeCamera(){
