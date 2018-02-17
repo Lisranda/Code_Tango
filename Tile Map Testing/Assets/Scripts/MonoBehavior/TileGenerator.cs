@@ -50,6 +50,21 @@ public class TileGenerator : MonoBehaviour {
 
 	void Update(){
 	}
+
+	public static bool InWorldBounds(int x, int y){
+		if (x >= 0 && x < mapWidth && y >= 0 && y < mapHeight)
+			return true;
+		else
+			return false;
+	}
+
+	public static Tile GetTileAt(int level, int x, int y){
+		if (InWorldBounds (x, y)) {
+			return tiles [level, x, y];
+		} else {
+			return null;
+		}
+	}
 						
 	void GenerateLevels(){
 		for (int level = 0; level < mapLevels; level++) {
@@ -81,15 +96,6 @@ public class TileGenerator : MonoBehaviour {
 	public void ChangeLevel(int currentLevel, int newLevel){
 		levelArray [currentLevel].SetActive (false);
 		levelArray [newLevel].SetActive (true);
-	}
-
-	public static Tile GetTileAt(int level, int x, int y){
-		if (x >= 0 && x < mapWidth && y >= 0 && y < mapHeight) {
-			Tile t = tiles [level, x, y];
-			return t;
-		} else {
-			return null;
-		}
 	}
 
 	public static Tile[] GetTileNeighbours (Tile t, bool diagonal = false){

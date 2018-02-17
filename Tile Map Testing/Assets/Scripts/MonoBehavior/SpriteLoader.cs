@@ -82,7 +82,7 @@ public class SpriteLoader : MonoBehaviour {
 		string key = wall.ToString () + "_" + quadrant.ToString () + "_";
 
 		if (quadrant == 1) {
-			if (IsEmptyOrNull (neighbours, 2) && IsEmptyOrNull (neighbours, 3) && IsEmptyOrNull (neighbours, 6)) {
+			if (IsEmptyOrNull (neighbours, 2) && IsEmptyOrNull (neighbours, 3)) {
 				key += "Cor";
 			} else if (!IsEmptyOrNull (neighbours, 2) && !IsEmptyOrNull (neighbours, 3) && IsEmptyOrNull (neighbours, 6)) {
 				key += "InvCor";
@@ -92,7 +92,7 @@ public class SpriteLoader : MonoBehaviour {
 				key += "W";
 			}
 		} else if (quadrant == 2) {
-			if (IsEmptyOrNull (neighbours, 1) && IsEmptyOrNull (neighbours, 2) && IsEmptyOrNull (neighbours, 5)) {
+			if (IsEmptyOrNull (neighbours, 1) && IsEmptyOrNull (neighbours, 2)) {
 				key += "Cor";
 			} else if (!IsEmptyOrNull (neighbours, 1) && !IsEmptyOrNull (neighbours, 2) && IsEmptyOrNull (neighbours, 5)) {
 				key += "InvCor";
@@ -102,7 +102,7 @@ public class SpriteLoader : MonoBehaviour {
 				key += "S";
 			}
 		} else if (quadrant == 3) {
-			if (IsEmptyOrNull (neighbours, 0) && IsEmptyOrNull (neighbours, 3) && IsEmptyOrNull (neighbours, 7)) {
+			if (IsEmptyOrNull (neighbours, 0) && IsEmptyOrNull (neighbours, 3)) {
 				key += "Cor";
 			} else if (!IsEmptyOrNull (neighbours, 0) && !IsEmptyOrNull (neighbours, 3) && IsEmptyOrNull (neighbours, 7)) {
 				key += "InvCor";
@@ -112,7 +112,7 @@ public class SpriteLoader : MonoBehaviour {
 				key += "W";
 			}
 		} else if (quadrant == 4) {
-			if (IsEmptyOrNull (neighbours, 0) && IsEmptyOrNull (neighbours, 1) && IsEmptyOrNull (neighbours, 4)) {
+			if (IsEmptyOrNull (neighbours, 0) && IsEmptyOrNull (neighbours, 1)) {
 				key += "Cor";
 			} else if (!IsEmptyOrNull (neighbours, 0) && !IsEmptyOrNull (neighbours, 1) && IsEmptyOrNull (neighbours, 4)) {
 				key += "InvCor";

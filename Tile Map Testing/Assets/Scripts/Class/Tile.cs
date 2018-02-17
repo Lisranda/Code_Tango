@@ -46,15 +46,5 @@ public class Tile {
 				}
 			}
 		}
-	}		
-		
-	public static void BuildWall(Tile tile){
-		tile.WALL = Wall.Empty;
-		tile.FLOOR = Floor.Stone;
-		tile.OVERLAY = Overlay.Empty;
-	}
-
-	public static void Dig(Tile tile){
-		tile.WALL = Wall.Empty;
-	}
+	}	
 }
