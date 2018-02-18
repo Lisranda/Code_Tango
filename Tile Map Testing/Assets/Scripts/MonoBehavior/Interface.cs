@@ -74,14 +74,20 @@ public class Interface : MonoBehaviour {
 
 	void MouseLeftClickInputs(){
 		if (Input.GetMouseButtonDown (0)) {
-			//Designations.Mine (TileGenerator.GetTileAt (MouseL (), MouseX (), MouseY ()));
-
 			if (TileGenerator.GetTileAt(MouseL (), MouseX (), MouseY ()) != null) {
 				mouseSelected.Add (TileGenerator.GetTileAt(MouseL (), MouseX (), MouseY ()));
 			}
-
 		}
 		if (Input.GetMouseButton (0)) {
+			if (MouseX () != mouseSelected [0].X || MouseY () != mouseSelected [0].Y) {
+				for (int i = mouseSelected [0].X; i <= MouseX (); i++) {
+					for (int o = mouseSelected [0].Y; o <= MouseY (); o++) {
+						mouseSelected.Add (TileGenerator.GetTileAt (MouseL (), i, o));
+					}
+					
+				}
+			}
+
 			foreach (Tile t in mouseSelected) {
 				t.OVERLAY = Tile.Overlay.SelectTile;
 				MeshRefresh.refreshList.Add (t.MESH [2]);

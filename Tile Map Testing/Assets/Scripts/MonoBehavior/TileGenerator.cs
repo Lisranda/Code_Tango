@@ -140,7 +140,6 @@ public class TileGenerator : MonoBehaviour {
 			if (GetMeshAt (arrayRef, mData.level, mData.x - 1, mData.y + 1) != null)
 				neighbours.Add(GetMeshAt (arrayRef, mData.level, mData.x - 1, mData.y + 1));			
 		}
-		//Debug.Log (neighbours.Count);
 		return neighbours;
 	}
 
