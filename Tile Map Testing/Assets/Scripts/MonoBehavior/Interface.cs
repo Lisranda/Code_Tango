@@ -8,16 +8,19 @@ public class Interface : MonoBehaviour {
 	int setShiftMultiplier = 2;
 	int shiftMultiplier;
 
+	List<Tile> mouseSelected;
+
 	void Awake (){
 		instance = this;
+		mouseSelected = new List<Tile> ();
 	}
 
 	void LateUpdate () {
 		SetShiftMultiplier ();
 		CameraMovementInputs ();
 		CameraZoomInputs ();
-		ChangeLevel ();
-		LeftClick ();
+		ChangeLevelInputs ();
+		MouseLeftClickInputs ();
 	}
 
 	#region Mouse Coords To Int
@@ -62,15 +65,36 @@ public class Interface : MonoBehaviour {
 			CameraController.CameraZoom (false, shiftMultiplier);
 	}
 
-	void ChangeLevel(){
+	void ChangeLevelInputs(){
 		if (Input.GetKeyDown ("[+]"))
 			CameraController.CameraLevelChange (true);
 		if (Input.GetKeyDown ("[-]"))
 			CameraController.CameraLevelChange (false);
 	}
 
-	void LeftClick(){
-		if (Input.GetMouseButtonDown (0))
-			Designations.Mine (TileGenerator.GetTileAt (MouseL (), MouseX (), MouseY ()));
+	void MouseLeftClickInputs(){
+		if (Input.GetMouseButtonDown (0)) {
+			//Designations.Mine (TileGenerator.GetTileAt (MouseL (), MouseX (), MouseY ()));
+
+			if (TileGenerator.GetTileAt(MouseL (), MouseX (), MouseY ()) != null) {
+				mouseSelected.Add (TileGenerator.GetTileAt(MouseL (), MouseX (), MouseY ()));
+			}
+
+		}
+		if (Input.GetMouseButton (0)) {
+			foreach (Tile t in mouseSelected) {
+				t.OVERLAY = Tile.Overlay.SelectTile;
+				MeshRefresh.refreshList.Add (t.MESH [2]);
+			}
+			
+		}
+		if (Input.GetMouseButtonUp (0)) {
+			foreach (Tile t in mouseSelected) {
+				Designations.Mine (t);
+				t.OVERLAY = Tile.Overlay.Empty;
+				MeshRefresh.refreshList.Add (t.MESH [2]);
+			}
+			mouseSelected.Clear ();
+		}
 	}
 }

@@ -20,8 +20,8 @@ public class MeshRefresh : MonoBehaviour {
 
 	void LateUpdate(){
 		RefreshMeshFromList ();
-	}		
-
+	}
+		
 	static void RemoveDuplicates(){
 		uniqueRefreshList.AddRange (refreshList.Distinct ().ToList ());
 		refreshList.Clear ();
@@ -88,26 +88,6 @@ public class MeshRefresh : MonoBehaviour {
 			if (m != 1) {
 				mesh.uv = uvs.ToArray ();
 			}
-			uvs.Clear ();
-		}
-	}
-
-	public static void RefreshFloorMeshes(){
-		int currentLevel = CameraController.currentLevel;
-
-		for (int i = 0; i < TileGenerator.meshList[currentLevel].Count; i++) {
-			GameObject go = TileGenerator.meshList [currentLevel] [i];
-			Mesh mesh = go.GetComponent<MeshFilter> ().sharedMesh;
-
-			int posChunkX = Mathf.FloorToInt(go.transform.position.x);
-			int posChunkY = Mathf.FloorToInt(go.transform.position.y);
-
-			for (int x = 0; x < mesh.bounds.size.x; x++) {
-				for (int y = 0; y < mesh.bounds.size.y; y++) {
-					uvs.AddRange (SpriteLoader.instance.GetWorldUVS (TileGenerator.tiles [currentLevel, x + posChunkX, y + posChunkY]));
-				}
-			}
-			mesh.uv = uvs.ToArray ();
 			uvs.Clear ();
 		}
 	}

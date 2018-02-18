@@ -19,7 +19,8 @@ public class TileGenerator : MonoBehaviour {
 	public int octaves;
 
 	int worldChunkMax = 25;
-	int wallChunkMax = 25;
+	int worldMeshCountX;
+	int worldMeshCountY;
 
 	public static int floorMeshArrayRef = 0;
 	public static int wallMeshArrayRef = 1;
@@ -33,13 +34,15 @@ public class TileGenerator : MonoBehaviour {
 
 	public static Tile[,,] tiles = new Tile[mapLevels, mapWidth, mapHeight];
 	public static GameObject[] levelArray = new GameObject[mapLevels];
-	public static List<List<GameObject>> meshList;
+	public static GameObject[,,,] meshArray;
 
 	Noise elevation;
 
 	void Awake (){
 		instance = this;
-		meshList = new List<List<GameObject>> ();
+		worldMeshCountX = Mathf.CeilToInt (mapWidth / (float)worldChunkMax);
+		worldMeshCountY = Mathf.CeilToInt (mapHeight / (float)worldChunkMax);
+		meshArray = new GameObject[3, mapLevels, worldMeshCountX, worldMeshCountY];
 		GenerateElevationNoise ();
 		GenerateTiles ();
 	}
@@ -65,11 +68,19 @@ public class TileGenerator : MonoBehaviour {
 			return null;
 		}
 	}
+
+	public static GameObject GetMeshAt(int arrayRef, int level, int x, int y){
+		if (x >= 0 && x < meshArray.GetLength (2) && y >= 0 && y < meshArray.GetLength (3)) {
+			return meshArray [arrayRef, level, x, y];
+		} else {
+			return null;
+		}
+	}
 						
 	void GenerateLevels(){
 		for (int level = 0; level < mapLevels; level++) {
 			levelArray [level] = new GameObject ("Level: " + (level + 1));
-			meshList.Add (new List<GameObject> ());
+			//meshList.Add (new List<List<List<GameObject>>> ());
 			levelArray [level].transform.position = Vector3.zero;
 			levelArray [level].transform.parent = this.transform;
 			DivideWorldArray (0, 0, level, levelArray [level]);
@@ -96,6 +107,41 @@ public class TileGenerator : MonoBehaviour {
 	public void ChangeLevel(int currentLevel, int newLevel){
 		levelArray [currentLevel].SetActive (false);
 		levelArray [newLevel].SetActive (true);
+	}
+
+	public static List<GameObject> GetMeshNeighbours (GameObject m, bool diagonal = false){
+		List<GameObject> neighbours = new List<GameObject> ();
+		DataTracker mData = m.GetComponent<DataTracker> ();
+		int arrayRef = 0;
+
+		if (mData.layer == DataTracker.Layer.Floor)
+			arrayRef = 0;
+		else if (mData.layer == DataTracker.Layer.Wall)
+			arrayRef = 1;
+		else if (mData.layer == DataTracker.Layer.Overlay)
+			arrayRef = 2;
+
+		if (GetMeshAt (arrayRef, mData.level, mData.x, mData.y + 1) != null)
+			neighbours.Add (GetMeshAt (arrayRef, mData.level, mData.x, mData.y + 1));
+		if (GetMeshAt (arrayRef, mData.level, mData.x + 1, mData.y) != null)
+			neighbours.Add(GetMeshAt (arrayRef, mData.level, mData.x + 1, mData.y));
+		if (GetMeshAt (arrayRef, mData.level, mData.x, mData.y - 1) != null)
+			neighbours.Add(GetMeshAt (arrayRef, mData.level, mData.x, mData.y - 1));
+		if (GetMeshAt (arrayRef, mData.level, mData.x - 1, mData.y) != null)
+			neighbours.Add(GetMeshAt (arrayRef, mData.level, mData.x - 1, mData.y));		
+
+		if (diagonal) {
+			if (GetMeshAt (arrayRef, mData.level, mData.x + 1, mData.y + 1) != null)
+				neighbours.Add(GetMeshAt (arrayRef, mData.level, mData.x + 1, mData.y + 1));
+			if (GetMeshAt (arrayRef, mData.level, mData.x + 1, mData.y - 1) != null)
+				neighbours.Add(GetMeshAt (arrayRef, mData.level, mData.x + 1, mData.y - 1));
+			if (GetMeshAt (arrayRef, mData.level, mData.x - 1, mData.y - 1) != null)
+				neighbours.Add(GetMeshAt (arrayRef, mData.level, mData.x - 1, mData.y - 1));
+			if (GetMeshAt (arrayRef, mData.level, mData.x - 1, mData.y + 1) != null)
+				neighbours.Add(GetMeshAt (arrayRef, mData.level, mData.x - 1, mData.y + 1));			
+		}
+		//Debug.Log (neighbours.Count);
+		return neighbours;
 	}
 
 	public static Tile[] GetTileNeighbours (Tile t, bool diagonal = false){
@@ -158,8 +204,10 @@ public class TileGenerator : MonoBehaviour {
 		GameObject meshGO = new GameObject ("MESH WORLD " + (currentLevel + 1) + " " + x + " " + y);
 		DataTracker tracker = meshGO.AddComponent<DataTracker> ();
 		tracker.level = currentLevel;
+		tracker.x = x / worldChunkMax;
+		tracker.y = y / worldChunkMax;
 		tracker.layer = DataTracker.Layer.Floor;
-		meshList [currentLevel].Add (meshGO);
+		meshArray[floorMeshArrayRef, currentLevel, x / worldChunkMax, y / worldChunkMax] = meshGO;
 
 		for (int i = 0 + x; i < tilesChunk.GetLength (1) + x; i++) {
 			for (int o = 0 + y; o < tilesChunk.GetLength (2) + y; o++) {
@@ -187,14 +235,14 @@ public class TileGenerator : MonoBehaviour {
 		int sizeX;
 		int sizeY;
 
-		if (tiles.GetLength (1) - dex1 > wallChunkMax) {
-			sizeX = wallChunkMax;
+		if (tiles.GetLength (1) - dex1 > worldChunkMax) {
+			sizeX = worldChunkMax;
 		} else {
 			sizeX = tiles.GetLength (1) - dex1;
 		}
 
-		if (tiles.GetLength (2) - dex2 > wallChunkMax) {
-			sizeY = wallChunkMax;
+		if (tiles.GetLength (2) - dex2 > worldChunkMax) {
+			sizeY = worldChunkMax;
 		} else {
 			sizeY = tiles.GetLength (2) - dex2;
 		}
@@ -209,12 +257,12 @@ public class TileGenerator : MonoBehaviour {
 
 		GenerateWallMesh (chunk, dex1, dex2, currentLevel, levelGO);
 
-		if (tiles.GetLength (1) > dex1 + wallChunkMax) {
-			DivideWallArray (dex1 + wallChunkMax, dex2, currentLevel, levelGO);
+		if (tiles.GetLength (1) > dex1 + worldChunkMax) {
+			DivideWallArray (dex1 + worldChunkMax, dex2, currentLevel, levelGO);
 			return;
 		}
-		if (tiles.GetLength (2) > dex2 + wallChunkMax) {
-			DivideWallArray (0, dex2 + wallChunkMax, currentLevel, levelGO);
+		if (tiles.GetLength (2) > dex2 + worldChunkMax) {
+			DivideWallArray (0, dex2 + worldChunkMax, currentLevel, levelGO);
 			return;
 		}
 	}
@@ -224,8 +272,10 @@ public class TileGenerator : MonoBehaviour {
 		GameObject meshGO = new GameObject ("MESH WALL " + (currentLevel + 1) + " " + x + " " + y);
 		DataTracker tracker = meshGO.AddComponent<DataTracker> ();
 		tracker.level = currentLevel;
+		tracker.x = x / worldChunkMax;
+		tracker.y = y / worldChunkMax;
 		tracker.layer = DataTracker.Layer.Wall;
-		meshList [currentLevel].Add (meshGO);
+		meshArray[wallMeshArrayRef, currentLevel, x / worldChunkMax, y / worldChunkMax] = meshGO;
 
 		for (int i = 0 + x; i < tilesChunk.GetLength (1) + x; i++) {
 			for (int o = 0 + y; o < tilesChunk.GetLength (2) + y; o++) {
@@ -235,12 +285,12 @@ public class TileGenerator : MonoBehaviour {
 
 		MeshFilter filter = meshGO.AddComponent<MeshFilter> ();
 		MeshRenderer render = meshGO.AddComponent<MeshRenderer> ();
-		MeshCollider collider = meshGO.AddComponent<MeshCollider> ();
+		//MeshCollider collider = meshGO.AddComponent<MeshCollider> ();
 		meshGO.transform.SetParent (levelGO.transform);
 		meshGO.transform.position = new Vector3 (x, y, wallMeshZ);
 		Mesh mesh = filter.mesh;
-		collider.convex = true;
-		collider.sharedMesh = mesh;
+		//collider.convex = true;
+		//collider.sharedMesh = mesh;
 		render.material = SpriteLoader.worldMaterial;
 
 		mesh.vertices = data.vertices.ToArray ();
@@ -290,8 +340,10 @@ public class TileGenerator : MonoBehaviour {
 		GameObject meshGO = new GameObject ("MESH OVERLAY " + (currentLevel + 1) + " " + x + " " + y);
 		DataTracker tracker = meshGO.AddComponent<DataTracker> ();
 		tracker.level = currentLevel;
+		tracker.x = x / worldChunkMax;
+		tracker.y = y / worldChunkMax;
 		tracker.layer = DataTracker.Layer.Overlay;
-		meshList [currentLevel].Add (meshGO);
+		meshArray[overlayMeshArrayRef, currentLevel, x / worldChunkMax, y / worldChunkMax] = meshGO;
 
 		for (int i = 0 + x; i < tilesChunk.GetLength (1) + x; i++) {
 			for (int o = 0 + y; o < tilesChunk.GetLength (2) + y; o++) {
@@ -301,12 +353,12 @@ public class TileGenerator : MonoBehaviour {
 
 		MeshFilter filter = meshGO.AddComponent<MeshFilter> ();
 		MeshRenderer render = meshGO.AddComponent<MeshRenderer> ();
-		MeshCollider collider = meshGO.AddComponent<MeshCollider> ();
+		//MeshCollider collider = meshGO.AddComponent<MeshCollider> ();
 		meshGO.transform.SetParent (levelGO.transform);
 		meshGO.transform.position = new Vector3 (x, y, overlayMeshZ);
 		Mesh mesh = filter.mesh;
-		collider.convex = true;
-		collider.sharedMesh = mesh;
+		//collider.convex = true;
+		//collider.sharedMesh = mesh;
 		render.material = SpriteLoader.worldMaterial;
 
 		mesh.vertices = data.vertices.ToArray ();
