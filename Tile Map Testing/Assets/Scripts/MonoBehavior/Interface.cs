@@ -92,9 +92,9 @@ public class Interface : MonoBehaviour {
 			foreach (Tile t in mouseSelected) {
 				t.OVERLAY = Tile.Overlay.SelectTile;
 				MeshRefresh.refreshList.Add (t.MESH [2]);
-			}
-			
+			}			
 		}
+
 		if (Input.GetMouseButtonUp (0)) {
 			foreach (Tile t in mouseSelected) {
 				Designations.Mine (t);
