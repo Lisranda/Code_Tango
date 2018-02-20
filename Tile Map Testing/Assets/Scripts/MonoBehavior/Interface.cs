@@ -82,9 +82,10 @@ public class Interface : MonoBehaviour {
 			if (MouseX () != mouseSelected [0].X || MouseY () != mouseSelected [0].Y) {
 				for (int i = mouseSelected [0].X; i <= MouseX (); i++) {
 					for (int o = mouseSelected [0].Y; o <= MouseY (); o++) {
-						mouseSelected.Add (TileGenerator.GetTileAt (MouseL (), i, o));
-					}
-					
+						if (!mouseSelected.Contains (TileGenerator.GetTileAt (MouseL (), i, o))) {
+							mouseSelected.Add (TileGenerator.GetTileAt (MouseL (), i, o));
+						}
+					}					
 				}
 			}
 
