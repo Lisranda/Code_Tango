@@ -6,8 +6,8 @@ public class Designations {
 	public static void Mine(Tile t){
 		if (t != null) {			
 			t.WALL = Tile.Wall.Empty;
-			MeshRefresh.refreshList.Add (TileGenerator.tiles [t.LEVEL, t.X, t.Y].MESH [1]);
-			MeshRefresh.refreshList.AddRange (TileGenerator.GetMeshNeighbours(TileGenerator.tiles [t.LEVEL, t.X, t.Y].MESH [1], true));
+			MeshRefresh.AddForRefresh (TileGenerator.tiles [t.LEVEL, t.X, t.Y].MESH [1]);
+			MeshRefresh.AddForRefreshRange (TileGenerator.GetMeshNeighbours(TileGenerator.tiles [t.LEVEL, t.X, t.Y].MESH [1], true));
 		}
 	}
 }

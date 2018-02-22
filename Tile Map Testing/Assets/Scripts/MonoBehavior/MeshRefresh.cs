@@ -21,9 +21,22 @@ public class MeshRefresh : MonoBehaviour {
 	void LateUpdate(){
 		RefreshMeshFromList ();
 	}
+
+	public static void AddForRefresh(GameObject meshGO){
+		if (!refreshList.Contains (meshGO))
+			refreshList.Add (meshGO);
+	}
+
+	public static void AddForRefreshRange(List<GameObject> meshGOList){
+		foreach (GameObject go in meshGOList) {
+			if (!refreshList.Contains (go))
+				refreshList.Add (go);
+		}
+	}
 		
 	static void RemoveDuplicates(){
-		uniqueRefreshList.AddRange (refreshList.Distinct ().ToList ());
+		//uniqueRefreshList.AddRange (refreshList.Distinct ().ToList ());
+		uniqueRefreshList.AddRange (refreshList);
 		refreshList.Clear ();
 	}
 
