@@ -274,7 +274,7 @@ Camera:
   m_Enabled: 1
   serializedVersion: 2
   m_ClearFlags: 1
-  m_BackGroundColor: {r: 0.19215687, g: 0.3019608, b: 0.4745098, a: 0}
+  m_BackGroundColor: {r: 0, g: 0, b: 0, a: 0}
   m_NormalizedViewPortRect:
     serializedVersion: 2
     x: 0
@@ -434,7 +434,3 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c88bc829f7cd1a04999ddfe97f8d3c9b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  cameraSpeed: 15
-  setShiftMultiplier: 2
-  maximumZoom: 10
-  minimumZoom: 30
