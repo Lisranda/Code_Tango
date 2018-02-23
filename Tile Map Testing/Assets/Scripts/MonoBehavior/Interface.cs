@@ -8,8 +8,8 @@ public class Interface : MonoBehaviour {
 	int setShiftMultiplier = 2;
 	int shiftMultiplier;
 
-	bool mineDesignation = false;
-	bool buildDesignation = false;
+	bool mouseBoxSelect = false;
+	bool mouseBoxSelectBorder = false;
 
 	List<Tile> mouseSelected;
 	List<Tile> actionSelected;
@@ -29,11 +29,10 @@ public class Interface : MonoBehaviour {
 		CameraZoomInputs ();
 		ChangeLevelInputs ();
 		DesignationSelector ();
-//		MouseHoverSelector ();
-		if (mineDesignation)
-			MineDesignation ();
-		if (buildDesignation)
-			BuildDesignation ();
+		if (mouseBoxSelectBorder)
+			MouseBoxSelect (false);
+		if (!mouseBoxSelectBorder)
+			MouseBoxSelect (true);
 	}
 
 	#region Mouse Coords To Int
@@ -87,30 +86,33 @@ public class Interface : MonoBehaviour {
 
 	void DesignationSelector(){
 		if (Input.GetKeyDown ("b")) {
-			if (!buildDesignation) {
-				mineDesignation = false;
-				buildDesignation = true;
+			if (!mouseBoxSelect) {
+				mouseBoxSelect = true;
+				mouseBoxSelectBorder = true;
+			} else {
+				mouseBoxSelect = false;
+				mouseBoxSelectBorder = false;
 			}				
-			else
-				buildDesignation = false;
 		}
-		if (Input.GetKeyDown ("m")) {
-			if (!mineDesignation) {
-				buildDesignation = false;
-				mineDesignation = true;
-			}					
-			else
-				mineDesignation = false;			
+		if (Input.GetKeyDown ("e")) {
+			if (!mouseBoxSelect) {
+				mouseBoxSelect = true;
+				mouseBoxSelectBorder = false;
+			} else {
+				mouseBoxSelect = false;
+				mouseBoxSelectBorder = false;
+			}							
 		}
 	}
 
-	void MouseHoverSelector(){
+	void MouseHoverSelector(bool desigOn){
 		if (tE != null) {
 			tE.OVERLAY = Tile.Overlay.Empty;
 			MeshRefresh.AddForRefresh (tE.MESH [2]);
+			tE = null;
 		}
 
-		if (TileGenerator.GetTileAt (MouseL (), MouseX (), MouseY ()) != null) {
+		if (desigOn && TileGenerator.GetTileAt (MouseL (), MouseX (), MouseY ()) != null) {
 			tS = TileGenerator.GetTileAt (MouseL (), MouseX (), MouseY ());
 			tE = tS;
 			tS.OVERLAY = Tile.Overlay.SelectTile;
@@ -118,122 +120,137 @@ public class Interface : MonoBehaviour {
 		}
 	}
 
-	void MineDesignation(){
-		MouseHoverSelector ();
+	void MouseBoxSelect(bool filled){
+		if (mouseBoxSelect) {
+			MouseHoverSelector (true);
 
-		if (Input.GetMouseButtonDown (0)) {
-			if (TileGenerator.GetTileAt(MouseL (), MouseX (), MouseY ()) != null) {
-				mouseSelected.Add (TileGenerator.GetTileAt(MouseL (), MouseX (), MouseY ()));
+			if (Input.GetMouseButtonDown (0)) {
+				if (TileGenerator.GetTileAt (MouseL (), MouseX (), MouseY ()) != null) {
+					mouseSelected.Add (TileGenerator.GetTileAt (MouseL (), MouseX (), MouseY ()));
+				}
 			}
-		}
 
-		if (Input.GetMouseButton (0)) {
-			if (TileGenerator.GetTileAt (MouseL (), MouseX (), MouseY ()) != null) {
-				int xS = mouseSelected [0].X;
-				int xE = MouseX ();
-				if (xE < xS) {
-					int swap = xS;
-					xS = xE;
-					xE = swap;
-				}
-				int yS = mouseSelected [0].Y;
-				int yE = MouseY ();
-				if (yE < yS) {
-					int swap = yS;
-					yS = yE;
-					yE = swap;
-				}
+			if (Input.GetMouseButton (0)) {
+				if (TileGenerator.GetTileAt (MouseL (), MouseX (), MouseY ()) != null) {
+					int xS = mouseSelected [0].X;
+					int xE = MouseX ();
+					if (xE < xS) {
+						int swap = xS;
+						xS = xE;
+						xE = swap;
+					}
+					int yS = mouseSelected [0].Y;
+					int yE = MouseY ();
+					if (yE < yS) {
+						int swap = yS;
+						yS = yE;
+						yE = swap;
+					}
 
-				for (int i = xS; i <= xE; i++) {
-					for (int o = yS; o <= yE; o++) {						
-						mouseSelected.Add (TileGenerator.GetTileAt (MouseL (), i, o));						
-					}					
-				}
+					if (filled) {
+						for (int i = xS; i <= xE; i++) {
+							for (int o = yS; o <= yE; o++) {						
+								mouseSelected.Add (TileGenerator.GetTileAt (MouseL (), i, o));						
+							}					
+						}
+					} else {
+						for (int i = xS; i <= xE; i++) {
+							for (int o = yS; o <= yE; o++) {
+								if (i == xS || i == xE || o == yS || o == yE)
+									mouseSelected.Add (TileGenerator.GetTileAt (MouseL (), i, o));						
+							}					
+						}
+					}
 
+					foreach (Tile t in actionSelected) {
+						t.OVERLAY = Tile.Overlay.Empty;
+						MeshRefresh.AddForRefresh (t.MESH [2]);
+					}
+
+					foreach (Tile t in mouseSelected) {
+						t.OVERLAY = Tile.Overlay.SelectTile;
+						MeshRefresh.AddForRefresh (t.MESH [2]);
+					}
+
+					actionSelected.Clear ();
+					actionSelected.AddRange (mouseSelected);
+					mouseSelected.Clear ();
+					mouseSelected.Add (actionSelected [0]);
+				}
+			}
+
+			if (Input.GetMouseButtonUp (0)) {
 				foreach (Tile t in actionSelected) {
+					Designations.Mine (t);
 					t.OVERLAY = Tile.Overlay.Empty;
 					MeshRefresh.AddForRefresh (t.MESH [2]);
 				}
-
-				foreach (Tile t in mouseSelected) {
-					t.OVERLAY = Tile.Overlay.SelectTile;
-					MeshRefresh.AddForRefresh (t.MESH [2]);
-				}
-
-				actionSelected.Clear ();
-				actionSelected.AddRange (mouseSelected);
 				mouseSelected.Clear ();
-				mouseSelected.Add (actionSelected [0]);
 			}
-		}
-
-		if (Input.GetMouseButtonUp (0)) {
-			foreach (Tile t in actionSelected) {
-				Designations.Mine (t);
-				t.OVERLAY = Tile.Overlay.Empty;
-				MeshRefresh.AddForRefresh (t.MESH [2]);
-			}
-			mouseSelected.Clear ();
-		}
+		} else
+			MouseHoverSelector (false);
 	}
 
-	void BuildDesignation(){
-		MouseHoverSelector ();
-
-		if (Input.GetMouseButtonDown (0)) {
-			if (TileGenerator.GetTileAt(MouseL (), MouseX (), MouseY ()) != null) {
-				mouseSelected.Add (TileGenerator.GetTileAt(MouseL (), MouseX (), MouseY ()));
-			}
-		}
-
-		if (Input.GetMouseButton (0)) {
-			if (TileGenerator.GetTileAt (MouseL (), MouseX (), MouseY ()) != null) {
-				int xS = mouseSelected [0].X;
-				int xE = MouseX ();
-				if (xE < xS) {
-					int swap = xS;
-					xS = xE;
-					xE = swap;
-				}
-				int yS = mouseSelected [0].Y;
-				int yE = MouseY ();
-				if (yE < yS) {
-					int swap = yS;
-					yS = yE;
-					yE = swap;
-				}
-
-				for (int i = xS; i <= xE; i++) {
-					for (int o = yS; o <= yE; o++) {
-						if ((i == xS || i == xE) || (o == yS || o == yE))
-							mouseSelected.Add (TileGenerator.GetTileAt (MouseL (), i, o));						
-					}					
-				}
-
-				foreach (Tile t in actionSelected) {
-					t.OVERLAY = Tile.Overlay.Empty;
-					MeshRefresh.AddForRefresh (t.MESH [2]);
-				}
-
-				foreach (Tile t in mouseSelected) {
-					t.OVERLAY = Tile.Overlay.SelectTile;
-					MeshRefresh.AddForRefresh (t.MESH [2]);
-				}
-
-				actionSelected.Clear ();
-				actionSelected.AddRange (mouseSelected);
-				mouseSelected.Clear ();
-				mouseSelected.Add (actionSelected [0]);
-			}
-		}
-
-		if (Input.GetMouseButtonUp (0)) {
-			foreach (Tile t in actionSelected) {
-				Designations.Mine (t);
-				t.OVERLAY = Tile.Overlay.Empty;
-				MeshRefresh.AddForRefresh (t.MESH [2]);
-			}
-			mouseSelected.Clear ();
-		}
-	}
+//	void MouseBoxSelectBorder(){
+//		if (mouseBoxBorder) {
+//			MouseHoverSelector (true);
+//
+//			if (Input.GetMouseButtonDown (0)) {
+//				if (TileGenerator.GetTileAt (MouseL (), MouseX (), MouseY ()) != null) {
+//					mouseSelected.Add (TileGenerator.GetTileAt (MouseL (), MouseX (), MouseY ()));
+//				}
+//			}
+//
+//			if (Input.GetMouseButton (0)) {
+//				if (TileGenerator.GetTileAt (MouseL (), MouseX (), MouseY ()) != null) {
+//					int xS = mouseSelected [0].X;
+//					int xE = MouseX ();
+//					if (xE < xS) {
+//						int swap = xS;
+//						xS = xE;
+//						xE = swap;
+//					}
+//					int yS = mouseSelected [0].Y;
+//					int yE = MouseY ();
+//					if (yE < yS) {
+//						int swap = yS;
+//						yS = yE;
+//						yE = swap;
+//					}
+//
+//					for (int i = xS; i <= xE; i++) {
+//						for (int o = yS; o <= yE; o++) {
+//							if ((i == xS || i == xE) || (o == yS || o == yE))
+//								mouseSelected.Add (TileGenerator.GetTileAt (MouseL (), i, o));						
+//						}					
+//					}
+//
+//					foreach (Tile t in actionSelected) {
+//						t.OVERLAY = Tile.Overlay.Empty;
+//						MeshRefresh.AddForRefresh (t.MESH [2]);
+//					}
+//
+//					foreach (Tile t in mouseSelected) {
+//						t.OVERLAY = Tile.Overlay.SelectTile;
+//						MeshRefresh.AddForRefresh (t.MESH [2]);
+//					}
+//
+//					actionSelected.Clear ();
+//					actionSelected.AddRange (mouseSelected);
+//					mouseSelected.Clear ();
+//					mouseSelected.Add (actionSelected [0]);
+//				}
+//			}
+//
+//			if (Input.GetMouseButtonUp (0)) {
+//				foreach (Tile t in actionSelected) {
+//					Designations.Mine (t);
+//					t.OVERLAY = Tile.Overlay.Empty;
+//					MeshRefresh.AddForRefresh (t.MESH [2]);
+//				}
+//				mouseSelected.Clear ();
+//			}
+//		} else
+//			MouseHoverSelector (false);
+//	}
 }

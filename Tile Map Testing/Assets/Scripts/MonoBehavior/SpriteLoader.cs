@@ -37,8 +37,8 @@ public class SpriteLoader : MonoBehaviour {
 	}
 
 	void InitializeSpriteUVs(){
-		float spriteWidth = 0f;
-		float spriteHeight = 0f;
+		double spriteWidth = 0d;
+		double spriteHeight = 0d;
 
 		//Calculate spritesheet width
 		foreach (Sprite sprite in SpriteArray) {
@@ -53,14 +53,14 @@ public class SpriteLoader : MonoBehaviour {
 		foreach (Sprite sprite in SpriteArray) {
 			Vector2[] uvs = new Vector2[4];
 
-			uvs [0] = new Vector2 (sprite.rect.x / spriteWidth, sprite.rect.y / spriteHeight);
-			uvs [1] = new Vector2 ((sprite.rect.x + sprite.rect.width) / spriteWidth, sprite.rect.y / spriteHeight);
-			uvs [2] = new Vector2 (sprite.rect.x / spriteWidth, (sprite.rect.y + sprite.rect.height) / spriteHeight);
-			uvs [3] = new Vector2 ((sprite.rect.x + sprite.rect.width) / spriteWidth, (sprite.rect.y + sprite.rect.height) / spriteHeight);
+			uvs [0] = new Vector2 ((float)(sprite.rect.x / spriteWidth), (float)(sprite.rect.y / spriteHeight));
+			uvs [1] = new Vector2 ((float)((sprite.rect.x + sprite.rect.width) / spriteWidth), (float)(sprite.rect.y / spriteHeight));
+			uvs [2] = new Vector2 ((float)(sprite.rect.x / spriteWidth), (float)((sprite.rect.y + sprite.rect.height) / spriteHeight));
+			uvs [3] = new Vector2 ((float)((sprite.rect.x + sprite.rect.width) / spriteWidth), (float)((sprite.rect.y + sprite.rect.height) / spriteHeight));
 
 			uvMap.Add (sprite.name, uvs);
 		}
-	}		
+	}
 
 	public Vector2[] GetWorldUVS (Tile tile){
 		string key = tile.FLOOR.ToString ();

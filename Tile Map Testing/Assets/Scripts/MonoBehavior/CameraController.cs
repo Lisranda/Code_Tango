@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class CameraController : MonoBehaviour {
 
-	static int cameraSpeed = 15;
+	static int cameraSpeed = 50;
 	static int numberOfZoomLevels = 10;
 
 	static int pixelsPerUnit = 32;
@@ -14,18 +14,21 @@ public class CameraController : MonoBehaviour {
 
 	static int orthoRef;
 
+	static GameObject world;
+
 
 	public static int currentLevel = TileGenerator.startingLevel - 1;
 	static int newLevel;
 
 
 	void Start (){
+		world = GameObject.Find ("World Controller");
 		InitializeCamera ();
 	}
 
 	public void InitializeCamera(){
 		orthoRef = ppuScale;
-		Camera.main.orthographicSize = (Camera.main.pixelHeight / (float)(ppuScale * pixelsPerUnit)) / 2f;
+		Camera.main.orthographicSize = (Camera.main.pixelHeight / (float)((ppuScale / 2f) * pixelsPerUnit)) / 2f;
 
 		CalculateValidOrthoScales ();
 	}
@@ -35,7 +38,7 @@ public class CameraController : MonoBehaviour {
 
 		for (int i = 0; i < orthoScales.Length; i++) {
 			int scale = i + 1;
-			orthoScales [i] = (Camera.main.pixelHeight / (float)(scale * pixelsPerUnit)) / 2f;
+			orthoScales [i] = (Camera.main.pixelHeight / (float)((scale / 2f) * pixelsPerUnit)) / 2f;
 		}
 	}
 
@@ -59,6 +62,23 @@ public class CameraController : MonoBehaviour {
 			orthoRef--;
 			Camera.main.orthographicSize = orthoScales [orthoRef];
 		}
+	}
+
+	public static void CameraZoomScale(bool zoomIn, int multiplier){
+		if (zoomIn) {
+			float x = world.transform.localScale.x;
+			float y = world.transform.localScale.y;
+			Mathf.Clamp(x += 0.01f, 0.5f, 3f);
+			Mathf.Clamp(y += 0.01f, 0.5f, 3f);
+			world.transform.localScale = new Vector3 (x, y, 0);
+		}			
+		if (!zoomIn) {
+			float x = world.transform.localScale.x;
+			float y = world.transform.localScale.y;
+			Mathf.Clamp(x -= 0.01f, 0.5f, 3f);
+			Mathf.Clamp(y -= 0.01f, 0.5f, 3f);
+			world.transform.localScale = new Vector3 (x, y, 0);
+		}			
 	}
 
 	public static void CameraLevelChange(bool goUp){
