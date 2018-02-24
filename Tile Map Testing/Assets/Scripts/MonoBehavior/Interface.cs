@@ -8,19 +8,21 @@ public class Interface : MonoBehaviour {
 	int setShiftMultiplier = 2;
 	int shiftMultiplier;
 
-	bool mouseBoxSelect = false;
-	bool mouseBoxSelectBorder = false;
-
 	List<Tile> mouseSelected;
 	List<Tile> actionSelected;
 
 	Tile tS;
 	Tile tE;
 
+	enum BoxSelectType {Off, Filled, Border};
+	BoxSelectType boxSelectType;
+	Designations.DesigType designation;
+
 	void Awake (){
 		instance = this;
 		mouseSelected = new List<Tile> ();
 		actionSelected = new List<Tile> ();
+		boxSelectType = BoxSelectType.Off;
 	}
 
 	void LateUpdate () {
@@ -29,10 +31,7 @@ public class Interface : MonoBehaviour {
 		CameraZoomInputs ();
 		ChangeLevelInputs ();
 		DesignationSelector ();
-		if (mouseBoxSelectBorder)
-			MouseBoxSelect (false);
-		if (!mouseBoxSelectBorder)
-			MouseBoxSelect (true);
+		MouseBoxSelect ();
 	}
 
 	#region Mouse Coords To Int
@@ -85,25 +84,45 @@ public class Interface : MonoBehaviour {
 	}
 
 	void DesignationSelector(){
-		if (Input.GetKeyDown ("b")) {
-			if (!mouseBoxSelect) {
-				mouseBoxSelect = true;
-				mouseBoxSelectBorder = true;
-			} else {
-				mouseBoxSelect = false;
-				mouseBoxSelectBorder = false;
-			}				
-		}
 		if (Input.GetKeyDown ("e")) {
-			if (!mouseBoxSelect) {
-				mouseBoxSelect = true;
-				mouseBoxSelectBorder = false;
+			if (boxSelectType == BoxSelectType.Filled) {
+				boxSelectType = BoxSelectType.Off;
 			} else {
-				mouseBoxSelect = false;
-				mouseBoxSelectBorder = false;
-			}							
+				designation = Designations.DesigType.Mine;
+				boxSelectType = BoxSelectType.Filled;
+			}
+		}
+
+		if (Input.GetKeyDown ("b")) {
+			if (boxSelectType == BoxSelectType.Border) {
+				boxSelectType = BoxSelectType.Off;
+			} else {
+				designation = Designations.DesigType.BuildWall;
+				boxSelectType = BoxSelectType.Border;
+			}
 		}
 	}
+
+//	void DesignationSelector(){
+//		if (Input.GetKeyDown ("b")) {
+//			if (!mouseBoxSelect) {
+//				mouseBoxSelect = true;
+//				mouseBoxSelectBorder = true;
+//			} else {
+//				mouseBoxSelect = false;
+//				mouseBoxSelectBorder = false;
+//			}				
+//		}
+//		if (Input.GetKeyDown ("e")) {
+//			if (!mouseBoxSelect) {
+//				mouseBoxSelect = true;
+//				mouseBoxSelectBorder = false;
+//			} else {
+//				mouseBoxSelect = false;
+//				mouseBoxSelectBorder = false;
+//			}							
+//		}
+//	}
 
 	void MouseHoverSelector(bool desigOn){
 		if (tE != null) {
@@ -120,8 +139,8 @@ public class Interface : MonoBehaviour {
 		}
 	}
 
-	void MouseBoxSelect(bool filled){
-		if (mouseBoxSelect) {
+	public void MouseBoxSelect(){
+		if (boxSelectType != BoxSelectType.Off) {
 			MouseHoverSelector (true);
 
 			if (Input.GetMouseButtonDown (0)) {
@@ -147,13 +166,13 @@ public class Interface : MonoBehaviour {
 						yE = swap;
 					}
 
-					if (filled) {
+					if (boxSelectType == BoxSelectType.Filled) {
 						for (int i = xS; i <= xE; i++) {
 							for (int o = yS; o <= yE; o++) {						
 								mouseSelected.Add (TileGenerator.GetTileAt (MouseL (), i, o));						
 							}					
 						}
-					} else {
+					} else if (boxSelectType == BoxSelectType.Border) {
 						for (int i = xS; i <= xE; i++) {
 							for (int o = yS; o <= yE; o++) {
 								if (i == xS || i == xE || o == yS || o == yE)
@@ -181,7 +200,7 @@ public class Interface : MonoBehaviour {
 
 			if (Input.GetMouseButtonUp (0)) {
 				foreach (Tile t in actionSelected) {
-					Designations.Mine (t);
+					Designations.DesignationCaller (t, designation);
 					t.OVERLAY = Tile.Overlay.Empty;
 					MeshRefresh.AddForRefresh (t.MESH [2]);
 				}

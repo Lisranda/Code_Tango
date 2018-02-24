@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class Tile {
-	public enum Wall {Empty, Wall, Water};
+	public enum Wall {Empty, Wall};
 	public Wall WALL;
 	public enum Floor {Empty, Grass, Dirt, Stone, Sand, Water};
 	public Floor FLOOR;

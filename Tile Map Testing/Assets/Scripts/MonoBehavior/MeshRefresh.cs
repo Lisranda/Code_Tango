@@ -37,9 +37,8 @@ public class MeshRefresh : MonoBehaviour {
 
 	void RefreshMeshFromList(){
 		RemoveDuplicates ();
-		for (int m = 0; m < 10; m++) {
-			if (uniqueRefreshList.Count > 0) {	
-				GameObject go = uniqueRefreshList [0];
+		if (uniqueRefreshList.Count > 0) {
+			foreach (GameObject go in uniqueRefreshList) {
 				Mesh mesh = go.GetComponent<MeshFilter> ().mesh;
 				int level = go.GetComponent<DataTracker> ().level;
 				DataTracker.Layer layer = go.GetComponent<DataTracker> ().layer;
@@ -66,9 +65,9 @@ public class MeshRefresh : MonoBehaviour {
 				}
 				mesh.uv = uvs.ToArray ();
 				uvs.Clear ();
-				uniqueRefreshList.RemoveAt (0);
-			}			
-		}
+			}
+			uniqueRefreshList.Clear ();
+		}		
 	}
 
 	public static void RefreshAllMeshAtTile(Tile t){

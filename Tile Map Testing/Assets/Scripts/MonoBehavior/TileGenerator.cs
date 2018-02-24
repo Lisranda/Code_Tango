@@ -18,7 +18,7 @@ public class TileGenerator : MonoBehaviour {
 	public float persistance;
 	public int octaves;
 
-	int worldChunkMax = 25;
+	int worldChunkMax = 10;
 	int worldMeshCountX;
 	int worldMeshCountY;
 
