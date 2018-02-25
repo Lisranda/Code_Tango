@@ -155,28 +155,20 @@ public class Interface : MonoBehaviour {
 					yE = swap;
 				}
 
-				if (boxSelectType == BoxSelectType.Filled) {
-					for (int u = lS; u <= lE; u++) {
-						for (int i = xS; i <= xE; i++) {
-							for (int o = yS; o <= yE; o++) {
-								if (TileGenerator.GetTileAt (u, i, o) != null)
-									mouseSelected.Add (TileGenerator.GetTileAt (u, i, o));				
-							}					
-						}
-					}
-
-				} else if (boxSelectType == BoxSelectType.Border) {
-					for (int u = lS; u <= lE; u++) {
-						for (int i = xS; i <= xE; i++) {
-							for (int o = yS; o <= yE; o++) {
-								if (TileGenerator.GetTileAt (u, i, o) != null) {
+				for (int u = lS; u <= lE; u++) {
+					for (int i = xS; i <= xE; i++) {
+						for (int o = yS; o <= yE; o++) {
+							if (TileGenerator.GetTileAt (u, i, o) != null) {
+								if (boxSelectType == BoxSelectType.Filled) {
+									mouseSelected.Add (TileGenerator.GetTileAt (u, i, o));
+								} else if (boxSelectType == BoxSelectType.Border) {
 									if (i == xS || i == xE || o == yS || o == yE)
 										mouseSelected.Add (TileGenerator.GetTileAt (u, i, o));
-								}															
-							}					
-						}
+								}
+							}															
+						}					
 					}
-				}
+				}					
 
 				foreach (Tile t in actionSelected) {
 					t.OVERLAY = Tile.Overlay.Empty;
