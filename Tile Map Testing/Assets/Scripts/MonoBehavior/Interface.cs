@@ -18,15 +18,15 @@ public class Interface : MonoBehaviour {
 	Tile tS;
 	Tile tE;
 
-	enum BoxSelectType {Off, Filled, Border};
-	BoxSelectType boxSelectType;
+	enum SelectionType {Off, Tile, Filled, Border, Object};
+	SelectionType selectionType;
 	Designations.DesigType designation;
 
 	void Awake (){
 		instance = this;
 		mouseSelected = new List<Tile> ();
 		actionSelected = new List<Tile> ();
-		boxSelectType = BoxSelectType.Off;
+		selectionType = SelectionType.Off;
 	}
 
 	void Update (){
@@ -89,20 +89,20 @@ public class Interface : MonoBehaviour {
 
 	void DesignationSelector(){
 		if (Input.GetKeyDown ("e")) {
-			if (boxSelectType == BoxSelectType.Filled) {
-				boxSelectType = BoxSelectType.Off;
+			if (selectionType == SelectionType.Filled) {
+				selectionType = SelectionType.Off;
 			} else {
 				designation = Designations.DesigType.Mine;
-				boxSelectType = BoxSelectType.Filled;
+				selectionType = SelectionType.Filled;
 			}
 		}
 
 		if (Input.GetKeyDown ("b")) {
-			if (boxSelectType == BoxSelectType.Border) {
-				boxSelectType = BoxSelectType.Off;
+			if (selectionType == SelectionType.Border) {
+				selectionType = SelectionType.Off;
 			} else {
 				designation = Designations.DesigType.BuildWall;
-				boxSelectType = BoxSelectType.Border;
+				selectionType = SelectionType.Border;
 			}
 		}
 	}
@@ -123,7 +123,7 @@ public class Interface : MonoBehaviour {
 	}
 
 	public void MouseBoxSelect(){
-		if (boxSelectType != BoxSelectType.Off) {
+		if (selectionType == SelectionType.Filled || selectionType == SelectionType.Border) {
 			MouseHoverSelector (true);
 
 			if (Input.GetMouseButtonDown (0)) {
@@ -159,9 +159,9 @@ public class Interface : MonoBehaviour {
 					for (int i = xS; i <= xE; i++) {
 						for (int o = yS; o <= yE; o++) {
 							if (TileGenerator.GetTileAt (u, i, o) != null) {
-								if (boxSelectType == BoxSelectType.Filled) {
+								if (selectionType == SelectionType.Filled) {
 									mouseSelected.Add (TileGenerator.GetTileAt (u, i, o));
-								} else if (boxSelectType == BoxSelectType.Border) {
+								} else if (selectionType == SelectionType.Border) {
 									if (i == xS || i == xE || o == yS || o == yE)
 										mouseSelected.Add (TileGenerator.GetTileAt (u, i, o));
 								}
@@ -191,7 +191,6 @@ public class Interface : MonoBehaviour {
 					t.OVERLAY = Tile.Overlay.Empty;
 					MeshRefresh.AddForRefresh (t.MESH [2]);
 				}
-				mouseSelected.Clear ();
 			}
 		} else
 			MouseHoverSelector (false);
