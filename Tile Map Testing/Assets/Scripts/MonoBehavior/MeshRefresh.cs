@@ -36,7 +36,8 @@ public class MeshRefresh : MonoBehaviour {
 	}
 
 	void RefreshMeshFromList(){
-		RemoveDuplicates ();
+		if (refreshList.Count > 0)
+			RemoveDuplicates ();
 		if (uniqueRefreshList.Count > 0) {
 			foreach (GameObject go in uniqueRefreshList) {
 				Mesh mesh = go.GetComponent<MeshFilter> ().mesh;

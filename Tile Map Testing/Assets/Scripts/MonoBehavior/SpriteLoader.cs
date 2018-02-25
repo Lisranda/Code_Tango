@@ -11,9 +11,13 @@ public class SpriteLoader : MonoBehaviour {
 
 	Dictionary<string, Vector2[]> uvMap;
 
+	Texture2D atlas;
+	Rect[] rects;
+
 	void Awake (){
 		instance = this;
 		uvMap = new Dictionary<string, Vector2[]>();
+
 
 		ImportSprites ();
 		InitializeWorldMaterial ();
@@ -29,36 +33,31 @@ public class SpriteLoader : MonoBehaviour {
 
 	void ImportSprites(){
 		SpriteArray = Resources.LoadAll<Sprite> ("Sprites");
+		Texture2D[] atlasTextures = new Texture2D[SpriteArray.Length];
+
+		for (int i = 0; i < SpriteArray.Length; i++) 
+			atlasTextures [i] = SpriteArray [i].texture;		
+
+		atlas = new Texture2D (8192, 8192);
+		atlas.filterMode = FilterMode.Point;
+		rects = atlas.PackTextures (atlasTextures, 0, 8192);
 	}
 
 	void InitializeWorldMaterial(){
 		worldMaterial = new Material (Shader.Find ("Sprites/Default"));
-		worldMaterial.mainTexture = SpriteArray [0].texture;
+		worldMaterial.mainTexture = atlas;
 	}
 
 	void InitializeSpriteUVs(){
-		double spriteWidth = 0d;
-		double spriteHeight = 0d;
-
-		//Calculate spritesheet width
-		foreach (Sprite sprite in SpriteArray) {
-			if (sprite.rect.x + sprite.rect.width > spriteWidth)
-				spriteWidth = sprite.rect.x + sprite.rect.width;
-
-			if (sprite.rect.y + sprite.rect.height > spriteHeight)
-				spriteHeight = sprite.rect.y + sprite.rect.height;
-		}
-
-		//Set UVs for each sprite
-		foreach (Sprite sprite in SpriteArray) {
+		for (int i = 0; i < rects.Length; i++) {
 			Vector2[] uvs = new Vector2[4];
 
-			uvs [0] = new Vector2 ((float)(sprite.rect.x / spriteWidth), (float)(sprite.rect.y / spriteHeight));
-			uvs [1] = new Vector2 ((float)((sprite.rect.x + sprite.rect.width) / spriteWidth), (float)(sprite.rect.y / spriteHeight));
-			uvs [2] = new Vector2 ((float)(sprite.rect.x / spriteWidth), (float)((sprite.rect.y + sprite.rect.height) / spriteHeight));
-			uvs [3] = new Vector2 ((float)((sprite.rect.x + sprite.rect.width) / spriteWidth), (float)((sprite.rect.y + sprite.rect.height) / spriteHeight));
+			uvs [0] = new Vector2 (rects [i].xMin, rects [i].yMin);
+			uvs [1] = new Vector2 (rects [i].xMax, rects [i].yMin);
+			uvs [2] = new Vector2 (rects [i].xMin, rects [i].yMax);
+			uvs [3] = new Vector2 (rects [i].xMax, rects [i].yMax);
 
-			uvMap.Add (sprite.name, uvs);
+			uvMap.Add (SpriteArray [i].name, uvs);
 		}
 	}
 

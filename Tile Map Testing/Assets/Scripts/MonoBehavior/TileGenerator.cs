@@ -28,7 +28,7 @@ public class TileGenerator : MonoBehaviour {
 
 	int worldMeshZ = 3;
 	int wallMeshZ = 2;
-	int overlayMeshZ=1;
+	int overlayMeshZ = 1;
 
 	public readonly static int startingLevel = 52;
 
@@ -80,7 +80,6 @@ public class TileGenerator : MonoBehaviour {
 	void GenerateLevels(){
 		for (int level = 0; level < mapLevels; level++) {
 			levelArray [level] = new GameObject ("Level: " + (level + 1));
-			//meshList.Add (new List<List<List<GameObject>>> ());
 			levelArray [level].transform.position = Vector3.zero;
 			levelArray [level].transform.parent = this.transform;
 			DivideWorldArray (0, 0, level, levelArray [level]);
@@ -180,12 +179,6 @@ public class TileGenerator : MonoBehaviour {
 
 		chunk = new Tile[mapLevels, sizeX, sizeY];
 
-		//for (int i = 0; i < sizeX; i++) {
-		//	for (int o = 0; o < sizeY; o++) {
-		//		chunk [currentLevel, i, o] = tiles [currentLevel, i + dex1, o + dex2];
-		//	}		
-		//}
-
 		GenerateWorldMesh (chunk, dex1, dex2, currentLevel, levelGO);
 
 		if (tiles.GetLength (1) > dex1 + worldChunkMax) {
@@ -216,12 +209,9 @@ public class TileGenerator : MonoBehaviour {
 
 		MeshFilter filter = meshGO.AddComponent<MeshFilter> ();
 		MeshRenderer render = meshGO.AddComponent<MeshRenderer> ();
-		//MeshCollider collider = meshGO.AddComponent<MeshCollider> ();
 		meshGO.transform.SetParent (levelGO.transform);
 		meshGO.transform.position = new Vector3 (x, y, worldMeshZ);
 		Mesh mesh = filter.mesh;
-		//collider.convex = true;
-		//collider.sharedMesh = mesh;
 		render.material = SpriteLoader.worldMaterial;
 
 		mesh.vertices = data.vertices.ToArray ();
@@ -247,12 +237,6 @@ public class TileGenerator : MonoBehaviour {
 		}
 
 		chunk = new Tile[mapLevels, sizeX, sizeY];
-
-		//for (int i = 0; i < sizeX; i++) {
-		//	for (int o = 0; o < sizeY; o++) {
-		//		chunk [currentLevel, i, o] = tiles [currentLevel, i + dex1, o + dex2];
-		//	}		
-		//}
 
 		GenerateWallMesh (chunk, dex1, dex2, currentLevel, levelGO);
 
@@ -284,12 +268,9 @@ public class TileGenerator : MonoBehaviour {
 
 		MeshFilter filter = meshGO.AddComponent<MeshFilter> ();
 		MeshRenderer render = meshGO.AddComponent<MeshRenderer> ();
-		//MeshCollider collider = meshGO.AddComponent<MeshCollider> ();
 		meshGO.transform.SetParent (levelGO.transform);
 		meshGO.transform.position = new Vector3 (x, y, wallMeshZ);
 		Mesh mesh = filter.mesh;
-		//collider.convex = true;
-		//collider.sharedMesh = mesh;
 		render.material = SpriteLoader.worldMaterial;
 
 		mesh.vertices = data.vertices.ToArray ();
@@ -315,12 +296,6 @@ public class TileGenerator : MonoBehaviour {
 		}
 
 		chunk = new Tile[mapLevels, sizeX, sizeY];
-
-		//for (int i = 0; i < sizeX; i++) {
-		//	for (int o = 0; o < sizeY; o++) {
-		//		chunk [currentLevel, i, o] = tiles [currentLevel, i + dex1, o + dex2];
-		//	}		
-		//}
 
 		GenerateOverlayMesh (chunk, dex1, dex2, currentLevel, levelGO);
 
@@ -352,12 +327,9 @@ public class TileGenerator : MonoBehaviour {
 
 		MeshFilter filter = meshGO.AddComponent<MeshFilter> ();
 		MeshRenderer render = meshGO.AddComponent<MeshRenderer> ();
-		//MeshCollider collider = meshGO.AddComponent<MeshCollider> ();
 		meshGO.transform.SetParent (levelGO.transform);
 		meshGO.transform.position = new Vector3 (x, y, overlayMeshZ);
 		Mesh mesh = filter.mesh;
-		//collider.convex = true;
-		//collider.sharedMesh = mesh;
 		render.material = SpriteLoader.worldMaterial;
 
 		mesh.vertices = data.vertices.ToArray ();
@@ -370,7 +342,6 @@ public class TileGenerator : MonoBehaviour {
 			int value = Random.Range (-1000, 1000);
 			seed = value.ToString ();
 		}
-
 		elevation = new Noise (seed.GetHashCode (), frequency, lacunarity, amplitude, persistance, octaves);
 	}
 }
