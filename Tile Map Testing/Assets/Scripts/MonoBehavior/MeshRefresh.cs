@@ -57,6 +57,8 @@ public class MeshRefresh : MonoBehaviour {
 							uvs.AddRange (SpriteLoader.instance.GetWallUVS (neighbours, TileGenerator.tiles [level, i + posChunkX, o + posChunkY].WALL, 2));
 							uvs.AddRange (SpriteLoader.instance.GetWallUVS (neighbours, TileGenerator.tiles [level, i + posChunkX, o + posChunkY].WALL, 3));
 							uvs.AddRange (SpriteLoader.instance.GetWallUVS (neighbours, TileGenerator.tiles [level, i + posChunkX, o + posChunkY].WALL, 4));
+						} else if (layer == DataTracker.Layer.Deployables) {
+							uvs.AddRange (SpriteLoader.instance.GetDeployablesUVS (TileGenerator.tiles [level, i + posChunkX, o + posChunkY]));
 						} else if (layer == DataTracker.Layer.Overlay) {
 							uvs.AddRange (SpriteLoader.instance.GetOverlayUVS (TileGenerator.tiles [level, i + posChunkX, o + posChunkY]));
 						} else {

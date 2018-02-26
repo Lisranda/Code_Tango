@@ -131,6 +131,21 @@ public class SpriteLoader : MonoBehaviour {
 		}
 	}
 
+	public Vector2[] GetDeployablesUVS (Tile tile){
+		if (tile.DEPLOYABLE == null)
+			return uvMap ["Empty"];
+		
+		string key = tile.DEPLOYABLE.name;
+
+		if (uvMap.ContainsKey (key)) {
+			return uvMap [key];
+		}
+		else {
+			Debug.LogError ("There is no UV for tile type: " + key);
+			return uvMap ["NullTile"];
+		}
+	}
+
 	public Vector2[] GetOverlayUVS (Tile tile){
 		string key = tile.OVERLAY.ToString ();
 

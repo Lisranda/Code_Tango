@@ -105,12 +105,21 @@ public class Interface : MonoBehaviour {
 				selectionType = SelectionType.Border;
 			}
 		}
+
+		if (Input.GetKeyDown ("c")) {
+			if (selectionType == SelectionType.Object) {
+				selectionType = SelectionType.Off;
+			} else {
+				designation = Designations.DesigType.PlaceDeployable;
+				selectionType = SelectionType.Object;
+			}
+		}
 	}
 
 	void MouseHoverSelector(bool desigOn){
 		if (tE != null) {
 			tE.OVERLAY = Tile.Overlay.Empty;
-			MeshRefresh.AddForRefresh (tE.MESH [2]);
+			MeshRefresh.AddForRefresh (tE.MESH [TileGenerator.overlayMeshArrayRef]);
 			tE = null;
 		}
 
@@ -118,7 +127,7 @@ public class Interface : MonoBehaviour {
 			tS = TileGenerator.GetTileAt (MouseL (), MouseX (), MouseY ());
 			tE = tS;
 			tS.OVERLAY = Tile.Overlay.SelectTile;
-			MeshRefresh.AddForRefresh (tS.MESH [2]);
+			MeshRefresh.AddForRefresh (tS.MESH [TileGenerator.overlayMeshArrayRef]);
 		}
 	}
 
@@ -172,12 +181,12 @@ public class Interface : MonoBehaviour {
 
 				foreach (Tile t in actionSelected) {
 					t.OVERLAY = Tile.Overlay.Empty;
-					MeshRefresh.AddForRefresh (t.MESH [2]);
+					MeshRefresh.AddForRefresh (t.MESH [TileGenerator.overlayMeshArrayRef]);
 				}
 
 				foreach (Tile t in mouseSelected) {
 					t.OVERLAY = Tile.Overlay.SelectTile;
-					MeshRefresh.AddForRefresh (t.MESH [2]);
+					MeshRefresh.AddForRefresh (t.MESH [TileGenerator.overlayMeshArrayRef]);
 				}
 
 				actionSelected.Clear ();
@@ -189,9 +198,19 @@ public class Interface : MonoBehaviour {
 				foreach (Tile t in actionSelected) {
 					Designations.DesignationCaller (t, designation);
 					t.OVERLAY = Tile.Overlay.Empty;
-					MeshRefresh.AddForRefresh (t.MESH [2]);
+					MeshRefresh.AddForRefresh (t.MESH [TileGenerator.overlayMeshArrayRef]);
 				}
 			}
+		} else if (selectionType == SelectionType.Object) {
+			MouseHoverSelector (true);
+
+			if (Input.GetMouseButtonUp (0) && TileGenerator.InWorldBounds (MouseL (), MouseX (), MouseY ())) {
+				Tile t = TileGenerator.GetTileAt (MouseL (), MouseX (), MouseY ());
+				if (t.DEPLOYABLE == null) {
+					Designations.DesignationCaller (t, designation);
+				}
+			}
+
 		} else
 			MouseHoverSelector (false);
 	}

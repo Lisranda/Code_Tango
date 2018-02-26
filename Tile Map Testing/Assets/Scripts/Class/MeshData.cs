@@ -25,6 +25,12 @@ public class MeshData {
 					GenerateWallSquare (tiles [currentLevel, x + xindex, y + yindex], x, y);
 				}
 			}
+		} else if (key == "Deployables") {
+			for (int x = 0; x < chunkTiles.GetLength (1); x++) {
+				for (int y = 0; y < chunkTiles.GetLength (2); y++) {
+					GenerateDeployablesSquare (tiles [currentLevel, x + xindex, y + yindex], x, y);
+				}
+			}
 		} else if (key == "Overlay") {
 			for (int x = 0; x < chunkTiles.GetLength (1); x++) {
 				for (int y = 0; y < chunkTiles.GetLength (2); y++) {
@@ -99,5 +105,22 @@ public class MeshData {
 		triangles.Add (vertices.Count - 4);
 
 		uvs.AddRange (SpriteLoader.instance.GetOverlayUVS (tile));
+	}
+
+	void GenerateDeployablesSquare (Tile tile, int x, int y){
+		vertices.Add (new Vector3 (x + 0, y + 0));
+		vertices.Add (new Vector3 (x + 1, y + 0));
+		vertices.Add (new Vector3 (x + 0, y + 1));
+		vertices.Add (new Vector3 (x + 1, y + 1));
+
+		triangles.Add (vertices.Count - 1);
+		triangles.Add (vertices.Count - 3);
+		triangles.Add (vertices.Count - 4);
+
+		triangles.Add (vertices.Count - 2);
+		triangles.Add (vertices.Count - 1);
+		triangles.Add (vertices.Count - 4);
+
+		uvs.AddRange (SpriteLoader.instance.GetDeployablesUVS (tile));
 	}
 }

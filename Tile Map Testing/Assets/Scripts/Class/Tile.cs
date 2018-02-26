@@ -12,10 +12,11 @@ public class Tile {
 	public readonly int X;
 	public readonly int Y;
 	public readonly int LEVEL;
-	public GameObject[] MESH = new GameObject[3];
+	public GameObject[] MESH = new GameObject[TileGenerator.numberOfMeshLayers];
 	public readonly float ELEVATION;
 	public readonly float TEMPERATURE;
 	public readonly float HUMIDITY;
+	public Deployables DEPLOYABLE;
 
 	public Tile(int level, int x, int y, float elevation){
 		this.X = x;
@@ -46,5 +47,18 @@ public class Tile {
 				}
 			}
 		}
-	}	
+	}
+
+	public bool AssignDeployableToTile (Deployables obj){
+		if (obj == null) {
+			DEPLOYABLE = null;
+			return true;
+		} else if (DEPLOYABLE != null) {
+			Debug.LogError ("Tile already has a deployable.");
+			return false;
+		} else {
+			DEPLOYABLE = obj;
+			return true;
+		}
+	}
 }
