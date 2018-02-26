@@ -206,9 +206,7 @@ public class Interface : MonoBehaviour {
 
 			if (Input.GetMouseButtonUp (0) && TileGenerator.InWorldBounds (MouseL (), MouseX (), MouseY ())) {
 				Tile t = TileGenerator.GetTileAt (MouseL (), MouseX (), MouseY ());
-				if (t.DEPLOYABLE == null) {
-					Designations.DesignationCaller (t, designation);
-				}
+				Designations.DesignationCaller (t, designation);
 			}
 
 		} else

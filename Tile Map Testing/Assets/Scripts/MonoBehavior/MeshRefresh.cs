@@ -72,35 +72,4 @@ public class MeshRefresh : MonoBehaviour {
 			uniqueRefreshList.Clear ();
 		}		
 	}
-
-	public static void RefreshAllMeshAtTile(Tile t){
-		for (int m = 0; m < t.MESH.Length; m++) {
-			GameObject go = t.MESH [m];
-			Mesh mesh = go.GetComponent<MeshFilter> ().mesh;
-
-			int posChunkX = Mathf.FloorToInt (go.transform.position.x);
-			int posChunkY = Mathf.FloorToInt (go.transform.position.y);
-
-			for (int i = 0; i < mesh.bounds.size.x; i++) {
-				for (int o = 0; o < mesh.bounds.size.y; o++) {
-					if (m == 0) {
-						uvs.AddRange (SpriteLoader.instance.GetWorldUVS (TileGenerator.tiles [t.LEVEL, i + posChunkX, o + posChunkY]));
-					} else if (m == 1) {
-						//uvs.AddRange (SpriteLoader.instance.GetWallUVS (tiles [t.LEVEL, i + posChunkX, o + posChunkY].WALL, 1));
-						//uvs.AddRange (SpriteLoader.instance.GetWallUVS (tiles [t.LEVEL, i + posChunkX, o + posChunkY].WALL, 2));
-						//uvs.AddRange (SpriteLoader.instance.GetWallUVS (tiles [t.LEVEL, i + posChunkX, o + posChunkY].WALL, 3));
-						//uvs.AddRange (SpriteLoader.instance.GetWallUVS (tiles [t.LEVEL, i + posChunkX, o + posChunkY].WALL, 4));
-					} else if (m == 2) {
-						uvs.AddRange (SpriteLoader.instance.GetOverlayUVS (TileGenerator.tiles [t.LEVEL, i + posChunkX, o + posChunkY]));
-					} else {
-						Debug.LogError ("RefreshAllMeshAtTile failed because it is trying to get UVS for a layer that doesn't exist in the tile.MESH array.");
-					}
-				}
-			}
-			if (m != 1) {
-				mesh.uv = uvs.ToArray ();
-			}
-			uvs.Clear ();
-		}
-	}
 }

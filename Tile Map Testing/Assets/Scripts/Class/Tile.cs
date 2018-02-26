@@ -54,7 +54,6 @@ public class Tile {
 			DEPLOYABLE = null;
 			return true;
 		} else if (DEPLOYABLE != null) {
-			Debug.LogError ("Tile already has a deployable.");
 			return false;
 		} else {
 			DEPLOYABLE = obj;
