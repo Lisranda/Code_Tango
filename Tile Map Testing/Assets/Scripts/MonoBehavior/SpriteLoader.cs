@@ -134,15 +134,18 @@ public class SpriteLoader : MonoBehaviour {
 	public Vector2[] GetDeployablesUVS (Tile tile){
 		if (tile.DEPLOYABLE == null)
 			return uvMap ["Empty"];
-		
-		string key = tile.DEPLOYABLE.name;
-
-		if (uvMap.ContainsKey (key)) {
-			return uvMap [key];
-		}
 		else {
-			Debug.LogError ("There is no UV for tile type: " + key);
-			return uvMap ["NullTile"];
+			int diffX = Mathf.Abs (tile.DEPLOYABLE.tile.X - tile.X);
+			int diffY = Mathf.Abs (tile.DEPLOYABLE.tile.Y - tile.Y);
+
+			string key = tile.DEPLOYABLE.name + "_" + diffX.ToString () + "_" + diffY.ToString ();
+
+			if (uvMap.ContainsKey (key)) {
+				return uvMap [key];
+			} else {
+				Debug.LogError ("There is no UV for tile type: " + key);
+				return uvMap ["NullTile"];
+			}		
 		}
 	}
 

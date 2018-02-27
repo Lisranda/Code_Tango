@@ -33,7 +33,7 @@ public class Designations {
 
 	static void PlaceDeployable(Tile t){
 		if (t != null) {
-			Deployables.PlaceDeployable (DeployableLoader.instance.GetModel ("Cabinet"), t);
+			Deployables.PlaceDeployable (DeployableLoader.instance.GetModel ("Bed"), t);
 			MeshRefresh.AddForRefresh (TileGenerator.tiles [t.LEVEL, t.X, t.Y].MESH [TileGenerator.deployablesMeshArrayRef]);
 			MeshRefresh.AddForRefreshRange (TileGenerator.GetMeshNeighbours(TileGenerator.tiles [t.LEVEL, t.X, t.Y].MESH [TileGenerator.deployablesMeshArrayRef], true));
 		}

@@ -7,7 +7,7 @@ public class Tile {
 	public Wall WALL;
 	public enum Floor {Empty, Grass, Dirt, Stone, Sand, Water};
 	public Floor FLOOR;
-	public enum Overlay {Empty, SelectTile};
+	public enum Overlay {Empty, SelectTile, BadSelectTile};
 	public Overlay OVERLAY;
 	public readonly int X;
 	public readonly int Y;
@@ -59,5 +59,19 @@ public class Tile {
 			DEPLOYABLE = obj;
 			return true;
 		}
+	}
+
+	public bool CheckDeployablesEmptyOnTile (){
+		if (DEPLOYABLE == null)
+			return true;
+		else
+			return false;
+	}
+
+	public bool ValidForDeployables () {
+		if (DEPLOYABLE == null && WALL == Wall.Empty)
+			return true;
+		else
+			return false;
 	}
 }

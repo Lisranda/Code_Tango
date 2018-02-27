@@ -15,6 +15,7 @@ public class DeployableLoader : MonoBehaviour {
 	void LoadModels () {
 		deployableModels = new Dictionary<string, Deployables> ();
 		deployableModels.Add ("Cabinet", Deployables.LoadDeployables ("Cabinet", 0.5f, 1, 1));
+		deployableModels.Add ("Bed", Deployables.LoadDeployables ("Bed", 0.5f, 1, 2));
 	}
 
 	public Deployables GetModel (string model) {
