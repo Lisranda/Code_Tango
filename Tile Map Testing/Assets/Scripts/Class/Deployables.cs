@@ -46,7 +46,7 @@ public class Deployables  {
 		}
 	}
 
-	public static Deployables LoadDeployables (string name, float travelSpeed, int sizeX, int sizeY) {
+	public static Deployables CreateModels (string name, float travelSpeed, int sizeX, int sizeY) {
 		Deployables obj = new Deployables ();
 		obj.name = name;
 		obj.travelSpeed = travelSpeed;

@@ -1,0 +1,17 @@
+<Deployables>
+
+	<Deployable>
+		<name>Cabinet</name>
+		<sizeX>1</sizeX>
+		<sizeY>1</sizeY>
+		<travelSpeed>0.5</travelSpeed>
+	</Deployable>
+
+	<Deployable>
+		<name>Bed</name>
+		<sizeX>1</sizeX>
+		<sizeY>2</sizeY>
+		<travelSpeed>0.5</travelSpeed>
+	</Deployable>
+
+</Deployables>
